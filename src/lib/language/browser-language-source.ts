@@ -26,7 +26,7 @@ export class BrowserLanguageSource extends LanguageSource {
 
   constructor(
     @Inject(DEFAULT_LANGUAGE) defaultLanguage: LanguageID,
-    @Inject(SUPPORTED_LANGUAGES) supportedLanguages: Iterable<LanguageID>,
+    @Inject(SUPPORTED_LANGUAGES) supportedLanguages: Array<LanguageID>,
   ) {
     super();
     this.defaultLanguage = defaultLanguage;

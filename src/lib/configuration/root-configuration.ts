@@ -2,7 +2,7 @@ import { InjectableProvider, InjectionToken } from '@angular/core';
 import { LanguageID } from '../language/language-id';
 import { LanguageMapping } from '../language/language-mapping';
 
-export const SUPPORTED_LANGUAGES = new InjectionToken<Iterable<LanguageID>>('SUPPORTED_LANGUAGES');
+export const SUPPORTED_LANGUAGES = new InjectionToken<Array<LanguageID>>('SUPPORTED_LANGUAGES');
 export const DEFAULT_LANGUAGE = new InjectionToken<LanguageID>('DEFAULT_LANGUAGE');
 export const LANGUAGE_MAPPING = new InjectionToken<LanguageMapping>('LANGUAGE_MAPPING');
 
