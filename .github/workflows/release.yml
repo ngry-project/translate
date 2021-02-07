@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - master
+      - alpha
+      - beta
 
 jobs:
   release:
@@ -37,7 +39,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build (in prod mode)
-        run: npm run build:prod
+        run: npm run build
 
       - name: Semantic release
         run: npx semantic-release

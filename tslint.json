@@ -43,22 +43,20 @@
         ]
       }
     ],
-    "no-any": false,
-    "no-console": [
-      true,
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"
-    ],
+    "no-any": true,
+    "no-console": {
+      "severity": "warning"
+    },
     "no-empty": false,
     "no-inferrable-types": [
       true,
       "ignore-params"
     ],
-    "no-non-null-assertion": true,
+    "no-non-null-assertion": {
+      "severity": "warning"
+    },
     "no-redundant-jsdoc": true,
+    "no-string-literal": false,
     "no-switch-case-fall-through": true,
     "no-var-requires": false,
     "object-literal-key-quotes": [
@@ -136,6 +134,7 @@
     "no-outputs-metadata-property": true,
     "template-banana-in-box": true,
     "template-no-negated-async": true,
+    "unified-signatures": false,
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "directive-selector": [

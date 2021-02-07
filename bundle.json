@@ -1,0 +1,224 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": {
+    "anyOf": [
+      {
+        "$ref": "#/definitions/ConfiguredPhrase"
+      },
+      {
+        "type": "string"
+      }
+    ]
+  },
+  "definitions": {
+    "ConfiguredPhrase": {
+      "properties": {
+        "fallback": {
+          "title": "Fallback value used when none of options matches",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/definitions/PhraseOption"
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "title": "Phrase variants",
+          "type": "array"
+        }
+      },
+      "required": [
+        "options"
+      ],
+      "type": "object"
+    },
+    "EqualOperator": {
+      "properties": {
+        "$eq": {
+          "title": "Right-side value",
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        }
+      },
+      "required": [
+        "$eq"
+      ],
+      "type": "object"
+    },
+    "GreaterThanOperator": {
+      "properties": {
+        "$gt": {
+          "title": "Right-side value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "$gt"
+      ],
+      "type": "object"
+    },
+    "GreaterThanOrEqualOperator": {
+      "properties": {
+        "$gte": {
+          "title": "Right-side value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "$gte"
+      ],
+      "type": "object"
+    },
+    "InOperator": {
+      "properties": {
+        "$in": {
+          "items": {
+            "type": [
+              "string",
+              "number",
+              "boolean"
+            ]
+          },
+          "minItems": 2,
+          "uniqueItems": true,
+          "title": "Set of unique acceptable items",
+          "type": "array"
+        }
+      },
+      "required": [
+        "$in"
+      ],
+      "type": "object"
+    },
+    "LowerThanOperator": {
+      "properties": {
+        "$lt": {
+          "title": "Right-side value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "$lt"
+      ],
+      "type": "object"
+    },
+    "LowerThanOrEqualOperator": {
+      "properties": {
+        "$lte": {
+          "title": "Right-side value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "$lte"
+      ],
+      "type": "object"
+    },
+    "PhraseOption": {
+      "properties": {
+        "then": {
+          "title": "Translation used when option matches",
+          "type": "string"
+        },
+        "when": {
+          "$ref": "#/definitions/Predicate",
+          "title": "One or more predicates"
+        }
+      },
+      "required": [
+        "then",
+        "when"
+      ],
+      "type": "object"
+    },
+    "Predicate": {
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/EqualOperator"
+              },
+              {
+                "$ref": "#/definitions/GreaterThanOperator"
+              },
+              {
+                "$ref": "#/definitions/GreaterThanOrEqualOperator"
+              },
+              {
+                "$ref": "#/definitions/LowerThanOperator"
+              },
+              {
+                "$ref": "#/definitions/LowerThanOrEqualOperator"
+              },
+              {
+                "$ref": "#/definitions/RegExpOperator"
+              },
+              {
+                "$ref": "#/definitions/InOperator"
+              }
+            ]
+          },
+          {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/EqualOperator"
+                },
+                {
+                  "$ref": "#/definitions/GreaterThanOperator"
+                },
+                {
+                  "$ref": "#/definitions/GreaterThanOrEqualOperator"
+                },
+                {
+                  "$ref": "#/definitions/LowerThanOperator"
+                },
+                {
+                  "$ref": "#/definitions/LowerThanOrEqualOperator"
+                },
+                {
+                  "$ref": "#/definitions/RegExpOperator"
+                },
+                {
+                  "$ref": "#/definitions/InOperator"
+                }
+              ]
+            },
+            "minItems": 2,
+            "uniqueItems": true,
+            "type": "array"
+          }
+        ]
+      },
+      "type": "object"
+    },
+    "RegExpOperator": {
+      "properties": {
+        "$flags": {
+          "title": "RegExp flags",
+          "type": "string",
+          "enum": [
+            "i",
+            "m",
+            "im"
+          ]
+        },
+        "$regexp": {
+          "title": "RegExp pattern",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "$regexp"
+      ],
+      "type": "object"
+    }
+  },
+  "title": "Translation phrases",
+  "type": "object"
+}

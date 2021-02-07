@@ -25,9 +25,9 @@
       "dom"
     ],
     "paths": {
-      "<library-name>": [
-        "dist/<library-name>/<library-name>",
-        "dist/<library-name>"
+      "translate": [
+        "dist/translate/translate",
+        "dist/translate"
       ]
     }
   },

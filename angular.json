@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "<library-name>": {
+    "translate": {
       "projectType": "library",
       "root": "",
       "sourceRoot": "src",
@@ -46,5 +46,5 @@
   "cli": {
     "analytics": false
   },
-  "defaultProject": "<library-name>"
+  "defaultProject": "translate"
 }
