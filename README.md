@@ -7,25 +7,48 @@
 
 ## Description
 
-[Description]
+Flexible and efficient translation module for Angular apps, an alternative to `ngx-translate`.
 
 ## Installation
 
 Using NPM:
 
 ```bash
-npm i @ngry/translate
+npm i @ngry/translate @ngry/store
 ```
 
 Using Yarn:
 
 ```bash
-yarn add @ngry/translate
+yarn add @ngry/translate @ngry/store
 ```
 
-## Documentation
+## Features
 
-[Documentation, links etc]
+### Compatibility with `ngx-translate`
+
+This library ships `TranslatePipe` for declarative translation and `TranslateService` for imperative translation just
+like `ngx-translate` do.
+
+### Customizable phrases
+
+- Plain-text phrase
+- Template phrase
+- Configured phrase
+
+### Bundles of phrases
+
+- Solves "big ball of mud" problem
+- One bundle provides a pack of phrases for one feature
+- Improves separation of concerns
+- Lazy loaded
+
+### Multiple languages support
+
+- Switch languages at runtime
+- Align with external language sources, for example browser settings or env variables
+- Makes it possible to request a confirmation for language change from user
+- Languages mapping to cover more language families with fewer efforts
 
 ## License
 
