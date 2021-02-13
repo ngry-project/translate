@@ -1,7 +1,7 @@
 import { EqualOperator } from './equal-operator';
 
 describe('EqualOperator', () => {
-  describe('constructor()', () => {
+  describe('constructor', () => {
     it('should throw error when language name length is not equal to 2', () => {
       expect(() => new EqualOperator('eng', 'uikit', 'button', 'param', 1)).toThrow();
     });

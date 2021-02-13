@@ -18,6 +18,6 @@ export class GreaterThanOperator extends NumberComparisonOperator {
     argument(typeOf(value, 'number'), `Accepted value type is number. ${this.context}`);
     argument(!isNaN(value), `NaN is not acceptable. ${this.context}`);
 
-    return value > this._value;
+    return value > this.value;
   }
 }

@@ -38,17 +38,18 @@ like `ngx-translate` do.
 
 ### Bundles of phrases
 
-- Solves "big ball of mud" problem
-- One bundle provides a pack of phrases for one feature
+- **Bundle** is a pack of phrases for concrete feature
+- **Bundles** is a solution for slicing large translation file into multiple chunks per feature
 - Improves separation of concerns
-- Lazy loaded
+- Bundles play nice with lazy modules and allow loading of fewer bytes
 
 ### Multiple languages support
 
-- Switch languages at runtime
-- Align with external language sources, for example browser settings or env variables
-- Makes it possible to request a confirmation for language change from user
-- Languages mapping to cover more language families with fewer efforts
+- **Supported language**: guarantees usage of only supported language(s)
+- **Language source**: an abstraction over source of language, for example browser settings, route param or env
+  variables
+- **Language change handler**: approve or decline the language change request
+- **Languages mapping**: makes it simpler to work with language families
 
 ## License
 

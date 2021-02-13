@@ -12,7 +12,7 @@ import { PhraseKey } from '../phrase/phrase-key';
 @Injectable({
   providedIn: 'root',
 })
-export class TranslateStore extends EntityCollectionStore<PhraseKey, Phrase, PhraseCollection> {
+export class RootTranslateStore extends EntityCollectionStore<PhraseKey, Phrase, PhraseCollection> {
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -26,19 +26,19 @@ export class TranslateStore extends EntityCollectionStore<PhraseKey, Phrase, Phr
 
     this.subscription.add(
       combineLatest([
-        languageStore.currentLanguage$,
+        languageStore.current$,
         bundleCollectionStore.state,
       ]).pipe(
-        map(([languageId, bundles]) => bundles.collectPhrasesOf(languageId)),
+        map(([language, bundles]) => bundles.collectPhrasesOf(language)),
       ).subscribe(state => this.next(state)),
     );
 
     this.subscription.add(
-      languageStore.currentLanguage$.subscribe(languageId => {
+      languageStore.current$.subscribe(language => {
         const bundleIds = bundleRegistry.knownBundleIds;
 
         bundleCollectionStore.loadMany({
-          languageId,
+          language,
           bundleIds,
         });
       }),

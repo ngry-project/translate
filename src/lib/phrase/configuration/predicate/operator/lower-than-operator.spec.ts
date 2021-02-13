@@ -1,7 +1,7 @@
 import { LowerThanOperator } from './lower-than-operator';
 
 describe('LowerThanOperator', () => {
-  describe('test(value)', () => {
+  describe('test', () => {
     it('should throw error when value type is not acceptable', () => {
       const operator = new LowerThanOperator('en', 'uikit', 'button', 'param', 0);
 

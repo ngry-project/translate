@@ -1,34 +1,29 @@
-import { LanguageID } from './language-id';
+import { Language } from './language';
 
 export class LanguageState {
-  private readonly defaultLanguage: LanguageID;
-  private readonly supportedLanguages: ReadonlySet<LanguageID>;
-
-  readonly currentLanguage: LanguageID;
+  readonly current: Language;
+  readonly default: Language;
+  readonly supported: ReadonlySet<Language>;
 
   constructor(
-    initialLanguage: LanguageID,
-    defaultLanguage: LanguageID,
-    supportedLanguages: Iterable<LanguageID>,
+    initialLanguage: Language,
+    defaultLanguage: Language,
+    supportedLanguages: Iterable<Language>,
   ) {
-    this.currentLanguage = initialLanguage;
-    this.defaultLanguage = defaultLanguage;
-    this.supportedLanguages = new Set(supportedLanguages);
+    this.current = initialLanguage;
+    this.default = defaultLanguage;
+    this.supported = new Set(supportedLanguages);
   }
 
-  setLanguage(language: LanguageID): LanguageState {
-    if (this.supports(language) && this.currentLanguage !== language) {
+  setLanguage(language: Language): LanguageState {
+    if (this.supported.has(language) && this.current !== language) {
       return new LanguageState(
         language,
-        this.defaultLanguage,
-        this.supportedLanguages,
+        this.default,
+        this.supported,
       );
     }
 
     return this;
-  }
-
-  supports(language: LanguageID): boolean {
-    return this.supportedLanguages.has(language);
   }
 }

@@ -5,7 +5,7 @@ export type SupplyFunction<T> = () => T;
 
 /**
  * Result of `typeof` operator.
- * @since 0.13.0
+ * @since 2.0.0
  * @deprecated Will be imported from @monument/contract
  */
 export type TypeOfResult = 'string' | 'boolean' | 'number' | 'object' | 'undefined' | 'symbol' | 'bigint' | 'function';
@@ -22,7 +22,7 @@ export function typeOf<T>(value: T, required: TypeOfResult, ...optional: TypeOfR
  * If it resolves to `false`, then throws {@link Error}.
  * @param expression Expression evaluation result
  * @throws {Error} if expression resolves to `false`
- * @since 1.1.0
+ * @since 2.0.0
  * @deprecated Will be imported from @monument/contract
  */
 export function argument(expression: boolean): void | never;
@@ -33,7 +33,7 @@ export function argument(expression: boolean): void | never;
  * @param expression Expression evaluation result
  * @param message Message
  * @throws {Error} if expression resolves to `false`
- * @since 1.1.0
+ * @since 2.0.0
  * @deprecated Will be imported from @monument/contract
  */
 export function argument(expression: boolean, message: string): void | never;
@@ -44,7 +44,7 @@ export function argument(expression: boolean, message: string): void | never;
  * @param expression Expression evaluation result
  * @param message Message supplier
  * @throws {Error} if expression resolves to `false`
- * @since 1.1.0
+ * @since 2.0.0
  * @deprecated Will be imported from @monument/contract
  */
 export function argument(expression: boolean, message: SupplyFunction<string>): void | never;

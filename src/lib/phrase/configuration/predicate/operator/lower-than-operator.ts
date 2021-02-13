@@ -1,5 +1,5 @@
-import { NumberComparisonOperator } from './number-comparison-operator';
 import { argument, typeOf } from '../../../../support/argument';
+import { NumberComparisonOperator } from './number-comparison-operator';
 
 /**
  * Represents {@link Operator} which performs lower than (<) comparison.
@@ -17,6 +17,6 @@ export class LowerThanOperator extends NumberComparisonOperator {
   test(value: number): boolean {
     argument(typeOf(value, 'number'), `Accepted value type is number. ${this.context}`);
 
-    return value < this._value;
+    return value < this.value;
   }
 }

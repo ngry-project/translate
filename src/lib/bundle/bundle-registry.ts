@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { LanguageID } from '../language/language-id';
+import { Language } from '../language/language';
 import { BundleID } from './bundle-id';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BundleRegistry {
-  private readonly registry = new Map<LanguageID, Set<BundleID>>();
+  private readonly registry = new Map<Language, Set<BundleID>>();
 
-  get knownBundleIds(): Iterable<BundleID> {
+  get knownBundleIds(): ReadonlySet<BundleID> {
     const ids = new Set<BundleID>();
 
     for (const bundleIds of this.registry.values()) {
@@ -20,20 +20,20 @@ export class BundleRegistry {
     return ids;
   }
 
-  has(languageId: LanguageID, bundleId: BundleID): boolean {
-    return this.registry.get(languageId)?.has(bundleId) ?? false;
+  has(language: Language, bundleId: BundleID): boolean {
+    return this.registry.get(language)?.has(bundleId) ?? false;
   }
 
-  register(languageId: LanguageID, bundleId: BundleID): boolean {
-    if (this.has(languageId, bundleId)) {
+  register(language: Language, bundleId: BundleID): boolean {
+    if (this.has(language, bundleId)) {
       return false;
     }
 
-    const bundleIds: Set<BundleID> = this.registry.get(languageId) ?? new Set<BundleID>();
+    const bundleIds: Set<BundleID> = this.registry.get(language) ?? new Set<BundleID>();
 
     bundleIds.add(bundleId);
 
-    this.registry.set(languageId, bundleIds);
+    this.registry.set(language, bundleIds);
 
     return true;
   }

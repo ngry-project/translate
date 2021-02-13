@@ -1,4 +1,4 @@
-import { LanguageID } from '../language/language-id';
+import { Language } from '../language/language';
 import { BundleID } from './bundle-id';
 
 /**
@@ -6,18 +6,18 @@ import { BundleID } from './bundle-id';
  * @since 2.0.0
  */
 export class BundleToken {
-  private readonly bundleId: BundleID;
-  private readonly languageId: LanguageID;
+  private readonly id: BundleID;
+  private readonly language: Language;
 
   constructor(
-    bundleId: BundleID,
-    languageId: LanguageID,
+    id: BundleID,
+    language: Language,
   ) {
-    this.bundleId = bundleId;
-    this.languageId = languageId;
+    this.id = id;
+    this.language = language;
   }
 
   equals(other: BundleToken): boolean {
-    return this.bundleId === other.bundleId && this.languageId === other.languageId;
+    return this.id === other.id && this.language === other.language;
   }
 }

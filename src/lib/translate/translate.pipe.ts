@@ -1,8 +1,8 @@
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { ChangeDetectorRef, OnDestroy, Pipe, PipeTransform } from '@angular/core';
-import { PhraseKey } from '../phrase/phrase-key';
 import { Locals } from '../phrase/locals';
+import { PhraseKey } from '../phrase/phrase-key';
 import { TranslateService } from './translate.service';
 
 @Pipe({

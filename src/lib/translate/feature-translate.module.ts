@@ -21,7 +21,7 @@ export class FeatureTranslateModule {
     if (configurations) {
       for (const configuration of configurations) {
         bundlesStore.loadMany({
-          languageId: languageStore.snapshot.currentLanguage,
+          language: languageStore.snapshot.current,
           bundleIds: configuration.bundles
         });
       }

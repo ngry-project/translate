@@ -2,12 +2,13 @@ import { from, Observable } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { EntityCollectionStore } from '@ngry/store';
+import { Language } from '../language/language';
 import { Bundle } from './bundle';
 import { BundleID } from './bundle-id';
 import { BundleCollection } from './bundle-collection';
-import { BundleToken} from './bundle-token';
+import { BundleToken } from './bundle-token';
 import { BundleSource } from './bundle-source';
-import { LanguageID } from '../language/language-id';
+import { BundleRequest } from './bundle-request';
 
 @Injectable({
   providedIn: 'root',
@@ -19,19 +20,19 @@ export class BundleCollectionStore extends EntityCollectionStore<BundleToken, Bu
     super(new BundleCollection());
   }
 
-  readonly load = this.effect((action$: Observable<{ languageId: LanguageID, bundleId: BundleID }>) => {
-    return action$.pipe(
-      mergeMap(action => this.source.get(action.languageId, action.bundleId)),
+  readonly load = this.effect((request$: Observable<BundleRequest>) => {
+    return request$.pipe(
+      mergeMap(request => this.source.get(request)),
       map(bundle => this.snapshot.add(bundle)),
-      tap(collection => this.next(collection)),
+      tap(state => this.next(state)),
     );
   });
 
-  readonly loadMany = this.effect((action$: Observable<{ languageId: LanguageID, bundleIds: Iterable<BundleID> }>) => {
+  readonly loadMany = this.effect((action$: Observable<{ language: Language, bundleIds: Iterable<BundleID> }>) => {
     return action$.pipe(
-      mergeMap(({languageId, bundleIds}) => {
+      mergeMap(({language, bundleIds}) => {
         return from(bundleIds).pipe(
-          tap(bundleId => this.load({languageId, bundleId})),
+          tap(bundleId => this.load({language, bundleId})),
         );
       }),
     );

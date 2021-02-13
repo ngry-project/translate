@@ -1,13 +1,14 @@
 import { Observable, Subscription } from 'rxjs';
-import { filter, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Inject, Injectable } from '@angular/core';
 import { StoreBase } from '@ngry/store';
-import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING, SUPPORTED_LANGUAGES } from '../configuration/root-configuration';
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '../configuration/root-configuration';
+import { Language } from './language';
 import { LanguageChangeHandler } from './language-change-handler';
-import { LanguageID } from './language-id';
+import { LanguageChangeRequest } from './language-change-request';
 import { LanguageSource } from './language-source';
 import { LanguageState } from './language-state';
-import { LanguageMapping } from './language-mapping';
+import { LanguageResolver } from './language-resolver';
 
 @Injectable({
   providedIn: 'root',
@@ -15,13 +16,13 @@ import { LanguageMapping } from './language-mapping';
 export class LanguageStore extends StoreBase<LanguageState> {
   private subscription: Subscription;
 
-  readonly currentLanguage$: Observable<LanguageID> = this.select(state => state.currentLanguage);
+  readonly current$: Observable<Language> = this.select(state => state.current);
 
   constructor(
-    @Inject(DEFAULT_LANGUAGE) defaultLanguage: LanguageID,
-    @Inject(SUPPORTED_LANGUAGES) supportedLanguages: Array<LanguageID>,
-    @Inject(LANGUAGE_MAPPING) languageMapping: LanguageMapping,
+    @Inject(DEFAULT_LANGUAGE) defaultLanguage: Language,
+    @Inject(SUPPORTED_LANGUAGES) supportedLanguages: Array<Language>,
     source: LanguageSource,
+    resolver: LanguageResolver,
     private changeHandler: LanguageChangeHandler,
   ) {
     super(
@@ -32,20 +33,21 @@ export class LanguageStore extends StoreBase<LanguageState> {
       ),
     );
 
-    this.subscription = source.language$.subscribe(language => {
+    this.subscription = source.language$.pipe(
+      map(language => resolver.resolve(language)),
+    ).subscribe(language => {
       this.initLanguageChange(language);
     });
   }
 
-  readonly initLanguageChange = this.effect((newLanguage$: Observable<LanguageID>) => {
+  private readonly initLanguageChange = this.effect((newLanguage$: Observable<Language>) => {
     return newLanguage$.pipe(
       switchMap(newLanguage => {
         return this.state.pipe(
           take(1),
-          filter(state => state.currentLanguage !== newLanguage),
-          filter(state => state.supports(newLanguage)),
+          filter(state => state.current !== newLanguage),
           switchMap(state => {
-            return this.changeHandler.handle(newLanguage, state.currentLanguage).pipe(
+            return this.changeHandler.handle(new LanguageChangeRequest(newLanguage, state.current)).pipe(
               tap(finalLanguage => this.completeLanguageChange(finalLanguage)),
             );
           }),
@@ -54,8 +56,8 @@ export class LanguageStore extends StoreBase<LanguageState> {
     );
   });
 
-  readonly completeLanguageChange = this.updater((state, languageId: LanguageID) => {
-    return state.setLanguage(languageId);
+  private readonly completeLanguageChange = this.updater((state, language: Language) => {
+    return state.setLanguage(language);
   });
 
   complete(): void {

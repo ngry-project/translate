@@ -1,8 +1,7 @@
 import { Observable } from 'rxjs';
-import { LanguageID } from '../language/language-id';
 import { BundleData } from './bundle-data';
-import { BundleID } from './bundle-id';
+import { BundleRequest } from './bundle-request';
 
 export abstract class BundleRepository {
-  abstract get(languageId: LanguageID, bundleId: BundleID): Observable<BundleData>;
+  abstract get(request: BundleRequest): Observable<BundleData | never>;
 }

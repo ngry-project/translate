@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
-import { LanguageID } from './language-id';
+import { Language } from './language';
+import { LanguageChangeRequest } from './language-change-request';
 
 export abstract class LanguageChangeHandler {
-  abstract handle(newLanguage: LanguageID, oldLanguage: LanguageID): Observable<LanguageID>;
+  abstract handle(request: LanguageChangeRequest): Observable<Language>;
 }

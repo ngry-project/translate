@@ -1,0 +1,2 @@
+
+export type Parameter = string;

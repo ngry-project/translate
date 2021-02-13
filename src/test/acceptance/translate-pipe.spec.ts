@@ -1,14 +1,10 @@
 import { skip, take } from 'rxjs/operators';
 import { Component } from '@angular/core';
-import { Locals } from '../../lib/phrase/locals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '../../lib/translate/translate.module';
-import { BundleRepositoryFixture } from '../fixture/bundle-repository-fixture';
-import { FakeLanguageSource } from '../../lib/testing/fake-language-source';
-import { FakeLanguageChangeHandler } from '../../lib/testing/fake-language-change-handler';
-import { BundleCollectionStore } from '../../lib/bundle/bundle-collection-store';
+import { FakeLanguageSource, LanguageSource, Locals, TranslateModule } from '../../public-api';
 import { BundleToken } from '../../lib/bundle/bundle-token';
-import { LanguageStore } from '../../lib/language/language-store';
+import { BundleCollectionStore } from '../../lib/bundle/bundle-collection-store';
+import { BundleRepositoryFixture } from '../fixture/bundle-repository-fixture';
 
 @Component({
   selector: 'lib-simple-phrase',
@@ -49,9 +45,9 @@ class ConditionalPhraseComponent {
   checked = false;
 }
 
-describe('Feature: TranslatePipe', () => {
+describe('TranslatePipe', () => {
 
-  describe('Scenario: simple phrase in text content', () => {
+  describe('simple phrase in text content', () => {
     let bundlesStore: BundleCollectionStore;
     let fixture: ComponentFixture<SimplePhraseComponent>;
     let component: SimplePhraseComponent;
@@ -69,11 +65,6 @@ describe('Feature: TranslatePipe', () => {
               },
               source: {
                 useExisting: FakeLanguageSource,
-              },
-              change: {
-                handler: {
-                  useExisting: FakeLanguageChangeHandler,
-                },
               },
             },
             bundle: {
@@ -110,19 +101,19 @@ describe('Feature: TranslatePipe', () => {
       await fixture.whenStable();
     });
 
-    describe('Given', () => {
+    describe('given', () => {
       test('component which uses "translate" pipe in text content', () => {
         expect(component).toBeInstanceOf(SimplePhraseComponent);
       });
     });
 
-    describe('When', () => {
+    describe('when', () => {
       test('"phrase" bundle loaded', () => {
         expect(bundlesStore.snapshot.has(new BundleToken('phrase', 'en'))).toBe(true);
       });
     });
 
-    describe('Then', () => {
+    describe('then', () => {
       it('should replace phrase keys in component template', () => {
         const innerText = fixture.nativeElement.textContent.trim();
 
@@ -131,7 +122,7 @@ describe('Feature: TranslatePipe', () => {
     });
   });
 
-  describe('Scenario: dynamic phrase in text content', () => {
+  describe('dynamic phrase in text content', () => {
     let bundlesStore: BundleCollectionStore;
     let fixture: ComponentFixture<TemplatePhraseComponent>;
     let component: TemplatePhraseComponent;
@@ -149,11 +140,6 @@ describe('Feature: TranslatePipe', () => {
               },
               source: {
                 useExisting: FakeLanguageSource,
-              },
-              change: {
-                handler: {
-                  useExisting: FakeLanguageChangeHandler,
-                },
               },
             },
             bundle: {
@@ -190,19 +176,19 @@ describe('Feature: TranslatePipe', () => {
       await fixture.whenStable();
     });
 
-    describe('Given', () => {
+    describe('given', () => {
       test('component which uses "translate" pipe in text content', () => {
         expect(component).toBeInstanceOf(TemplatePhraseComponent);
       });
     });
 
-    describe('When', () => {
+    describe('when', () => {
       test('"phrase" bundle loaded', () => {
         expect(bundlesStore.snapshot.has(new BundleToken('phrase', 'en'))).toBe(true);
       });
     });
 
-    describe('Then', () => {
+    describe('then', () => {
       it('should replace phrase keys in component template', () => {
         const innerText = fixture.nativeElement.textContent.trim();
 
@@ -211,7 +197,7 @@ describe('Feature: TranslatePipe', () => {
     });
   });
 
-  describe('Scenario: configurable phrase in text content', () => {
+  describe('configurable phrase in text content', () => {
     let bundlesStore: BundleCollectionStore;
     let fixture: ComponentFixture<ConfiguredPhraseComponent>;
     let component: ConfiguredPhraseComponent;
@@ -229,11 +215,6 @@ describe('Feature: TranslatePipe', () => {
               },
               source: {
                 useExisting: FakeLanguageSource,
-              },
-              change: {
-                handler: {
-                  useExisting: FakeLanguageChangeHandler,
-                },
               },
             },
             bundle: {
@@ -270,19 +251,19 @@ describe('Feature: TranslatePipe', () => {
       await fixture.whenStable();
     });
 
-    describe('Given', () => {
+    describe('given', () => {
       test('component which uses "translate" pipe in text content', () => {
         expect(component).toBeInstanceOf(ConfiguredPhraseComponent);
       });
     });
 
-    describe('When', () => {
+    describe('when', () => {
       test('"phrase" bundle loaded', () => {
         expect(bundlesStore.snapshot.has(new BundleToken('phrase', 'en'))).toBe(true);
       });
     });
 
-    describe('Then', () => {
+    describe('then', () => {
       it('should replace phrase keys in component template', () => {
         const innerText = fixture.nativeElement.textContent.trim();
 
@@ -291,8 +272,8 @@ describe('Feature: TranslatePipe', () => {
     });
   });
 
-  describe('Scenario: language change updates UI', () => {
-    let languageStore: LanguageStore;
+  describe('language change updates UI', () => {
+    let languageSource: FakeLanguageSource;
     let bundlesStore: BundleCollectionStore;
     let fixture: ComponentFixture<SimplePhraseComponent>;
     let component: SimplePhraseComponent;
@@ -312,11 +293,6 @@ describe('Feature: TranslatePipe', () => {
               source: {
                 useExisting: FakeLanguageSource,
               },
-              change: {
-                handler: {
-                  useExisting: FakeLanguageChangeHandler,
-                },
-              },
             },
             bundle: {
               repository: {
@@ -335,7 +311,7 @@ describe('Feature: TranslatePipe', () => {
         ],
       }).compileComponents();
 
-      languageStore = TestBed.inject(LanguageStore);
+      languageSource = TestBed.inject(LanguageSource) as FakeLanguageSource;
       bundlesStore = TestBed.inject(BundleCollectionStore);
 
       fixture = TestBed.createComponent(SimplePhraseComponent);
@@ -357,7 +333,7 @@ describe('Feature: TranslatePipe', () => {
 
       snapshots.push(fixture.nativeElement.textContent.trim());
 
-      languageStore.initLanguageChange('ua');
+      languageSource.next('ua');
 
       // wait for "phrase" bundle to load within "ua" language
       await bundlesStore.state.pipe(
@@ -372,13 +348,13 @@ describe('Feature: TranslatePipe', () => {
 
     });
 
-    describe('Given', () => {
+    describe('given', () => {
       test('component which uses "translate" pipe in text content', () => {
         expect(component).toBeInstanceOf(SimplePhraseComponent);
       });
     });
 
-    describe('When', () => {
+    describe('when', () => {
       test('"phrase" bundle loaded within "en" language', () => {
         expect(bundlesStore.snapshot.has(new BundleToken('phrase', 'en'))).toBe(true);
       });
@@ -388,7 +364,7 @@ describe('Feature: TranslatePipe', () => {
       });
     });
 
-    describe('Then', () => {
+    describe('then', () => {
       it('should replace phrase keys in component template', () => {
         expect(snapshots[0]).toBe('');
         expect(snapshots[1]).toBe('Simple phrase');
@@ -397,7 +373,7 @@ describe('Feature: TranslatePipe', () => {
     });
   });
 
-  describe('Scenario: conditional phrase in text content', () => {
+  describe('conditional phrase in text content', () => {
     let bundlesStore: BundleCollectionStore;
     let fixture: ComponentFixture<ConditionalPhraseComponent>;
     let component: ConditionalPhraseComponent;
@@ -416,11 +392,6 @@ describe('Feature: TranslatePipe', () => {
               },
               source: {
                 useExisting: FakeLanguageSource,
-              },
-              change: {
-                handler: {
-                  useExisting: FakeLanguageChangeHandler,
-                },
               },
             },
             bundle: {
@@ -468,19 +439,19 @@ describe('Feature: TranslatePipe', () => {
       snapshots.push(fixture.nativeElement.textContent.trim());
     });
 
-    describe('Given', () => {
-      test('component which uses "translate" pipe in text content', () => {
+    describe('given', () => {
+      test('the component which uses "translate" pipe in text content', () => {
         expect(component).toBeInstanceOf(ConditionalPhraseComponent);
       });
     });
 
-    describe('When', () => {
-      test('component state changed', () => {
+    describe('when', () => {
+      test('the component state changes', () => {
         expect(component.checked).toBe(true);
       });
     });
 
-    describe('Then', () => {
+    describe('then', () => {
       it('should have an initial text equal ""', () => {
         expect(snapshots[0]).toBe('');
       });
