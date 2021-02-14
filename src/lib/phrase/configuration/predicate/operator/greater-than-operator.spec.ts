@@ -1,7 +1,7 @@
 import { GreaterThanOperator } from './greater-than-operator';
 
 describe('GreaterThanOperator', () => {
-  describe('test(value)', () => {
+  describe('test', () => {
     it('should throw error when value type is not acceptable', () => {
       const operator = new GreaterThanOperator('en', 'uikit', 'button', 'param', 0);
 

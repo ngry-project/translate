@@ -1,41 +1,40 @@
-import { Observable, of, throwError } from 'rxjs';
-import { delay, switchMap } from 'rxjs/operators';
+import { Observable, ReplaySubject, throwError, timer } from 'rxjs';
+import { catchError, delay, switchMap, tap } from 'rxjs/operators';
 import { BundleData } from '../bundle/bundle-data';
-import { BundleRepository } from '../bundle/bundle-repository';
-import { LanguageID } from '../language/language-id';
-import { BundleID } from '../bundle/bundle-id';
+import { BundleRepositoryData } from '../bundle/bundle-repository-data';
+import { StaticBundleRepository } from '../bundle/static-bundle-repository';
+import { BundleRequest } from '../bundle/bundle-request';
 
-export interface FakeBundleRepositoryData {
-  [languageId: string]: FakeLanguageData;
-}
+export abstract class FakeBundleRepository extends StaticBundleRepository {
+  readonly requests: Array<BundleRequest> = [];
+  readonly requests$: ReplaySubject<BundleRequest> = new ReplaySubject();
 
-export interface FakeLanguageData {
-  [bundleId: string]: BundleData;
-}
+  readonly responses: Array<BundleData> = [];
+  readonly responses$: ReplaySubject<BundleData> = new ReplaySubject();
 
-export abstract class FakeBundleRepository extends BundleRepository {
+  readonly errors: Array<Error> = [];
+  readonly errors$: ReplaySubject<Error> = new ReplaySubject();
 
   protected constructor(
-    readonly data: FakeBundleRepositoryData,
+    data: BundleRepositoryData,
   ) {
-    super();
+    super(data);
   }
 
-  get(languageId: LanguageID, bundleId: BundleID): Observable<BundleData> {
-    const bundleData = this.data[languageId]?.[bundleId];
+  get(request: BundleRequest): Observable<BundleData> {
+    this.requests.push(request);
+    this.requests$.next(request);
 
-    if (bundleData) {
-      return of(bundleData).pipe(
-        delay(10),
-      );
-    }
-
-    // todo: how to track the error in tests?
-
-    return of(undefined).pipe(
+    return super.get(request).pipe(
       delay(10),
-      switchMap(() => {
-        return throwError(new Error(`Bundle "${bundleId}" not found for language "${languageId}"`));
+      tap(data => this.responses.push(data)),
+      tap(data => this.responses$.next(data)),
+      catchError(err => {
+        return timer(10).pipe(
+          tap(() => this.errors.push(err)),
+          tap(() => this.errors$.next(err)),
+          switchMap(() => throwError(err)),
+        );
       }),
     );
   }

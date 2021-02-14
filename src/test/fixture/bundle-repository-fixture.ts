@@ -16,32 +16,20 @@ export class BundleRepositoryFixture extends FakeBundleRepository {
         },
         phrase: {
           'phrase.simple': 'Simple phrase',
-          'phrase.template': 'Dynamic value: {value}',
+          'phrase.template': 'Dynamic value: {{ value }}',
           'phrase.configurable': {
             fallback: 'fallback',
             options: [
               {
-                when: {
-                  value: {
-                    $eq: 0,
-                  },
-                },
+                when: {value: {$eq: 0}},
                 then: 'none',
               },
               {
-                when: {
-                  value: {
-                    $eq: 1,
-                  },
-                },
+                when: {value: {$eq: 1}},
                 then: 'single',
               },
               {
-                when: {
-                  value: {
-                    $gt: 1,
-                  },
-                },
+                when: {value: {$gt: 1}},
                 then: 'many',
               },
             ],
@@ -59,32 +47,20 @@ export class BundleRepositoryFixture extends FakeBundleRepository {
         },
         phrase: {
           'phrase.simple': 'Проста фраза',
-          'phrase.template': 'Динамічне значення: {value}',
+          'phrase.template': 'Динамічне значення: {{ value }}',
           'phrase.configurable': {
             fallback: 'Запаска',
             options: [
               {
-                when: {
-                  value: {
-                    $eq: 0,
-                  },
-                },
+                when: {value: {$eq: 0}},
                 then: 'пусто',
               },
               {
-                when: {
-                  value: {
-                    $eq: 1,
-                  },
-                },
+                when: {value: {$eq: 1}},
                 then: 'один',
               },
               {
-                when: {
-                  value: {
-                    $gt: 1,
-                  },
-                },
+                when: {value: {$gt: 1}},
                 then: 'багато',
               },
             ],

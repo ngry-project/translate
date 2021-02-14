@@ -17,6 +17,6 @@ export class GreaterThanOrEqualOperator extends NumberComparisonOperator {
   test(value: number): boolean {
     argument(typeOf(value, 'number'), `Accepted value type is number. ${this.context}`);
 
-    return value >= this._value;
+    return value >= this.value;
   }
 }

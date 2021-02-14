@@ -1,16 +1,16 @@
 import { EntityCollection } from '@ngry/store';
 import { Bundle } from './bundle';
-import { LanguageID } from '../language/language-id';
+import { Language } from '../language/language';
 import { PhraseCollection } from '../phrase/phrase-collection';
 import { BundleToken } from './bundle-token';
 
 export class BundleCollection extends EntityCollection<BundleToken, Bundle, BundleCollection> {
 
-  collectPhrasesOf(languageId: LanguageID): PhraseCollection {
+  collectPhrasesOf(language: Language): PhraseCollection {
     let phrases = new PhraseCollection();
 
     for (const bundle of this) {
-      if (bundle.languageId === languageId) {
+      if (bundle.language === language) {
         phrases = phrases.addMany(bundle.phrases);
       }
     }

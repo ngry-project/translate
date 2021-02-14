@@ -1,9 +1,10 @@
 import { argument, typeOf } from '../../../../support/argument';
 import { DebugContext } from '../../../../support/debug-context';
-import { LanguageID } from '../../../../language/language-id';
+import { Language } from '../../../../language/language';
 import { BundleID } from '../../../../bundle/bundle-id';
 import { PhraseKey } from '../../../phrase-key';
 import { Operator } from './operator';
+import { Parameter } from '../../../parameter';
 
 /**
  * Represents {@link Operator} which performs strict equality (===) comparison.
@@ -18,10 +19,8 @@ export class EqualOperator extends Operator<string | number | boolean> {
    * @throws {Error} if `value` type not acceptable
    * @since 2.0.0
    */
-  constructor(languageId: LanguageID, bundleId: BundleID, phraseKey: PhraseKey, propertyName: string, value: string | number | boolean) {
-    super(languageId, bundleId, phraseKey, propertyName);
-
-    this.context = new DebugContext({languageName: languageId, bundleName: bundleId, phraseKey, propertyName, value});
+  constructor(language: Language, bundleId: BundleID, phraseKey: PhraseKey, property: Parameter, value: string | number | boolean) {
+    super(language, bundleId, phraseKey, property, new DebugContext({language, bundleId, phraseKey, property, value}));
 
     argument(
       typeOf(value, 'number', 'string', 'boolean'),

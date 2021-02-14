@@ -1,3 +1,3 @@
-import { LanguageID } from './language-id';
+import { Language } from './language';
 
-export type LanguageMapping = Record<LanguageID, Array<LanguageID | RegExp>>;
+export type LanguageMapping = Record<Language, Array<Language | RegExp>>;

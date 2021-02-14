@@ -3,22 +3,23 @@ import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Locals } from '../phrase/locals';
 import { PhraseKey } from '../phrase/phrase-key';
-import { TranslateStore } from './translate.store';
+import { RootTranslateStore } from './root-translate.store';
 import { TranslateService } from './translate.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GlobalTranslateService extends TranslateService {
+export class RootTranslateService extends TranslateService {
 
   constructor(
-    private readonly store: TranslateStore,
+    private readonly store: RootTranslateStore,
   ) {
     super();
   }
 
   instant(key: PhraseKey, locals?: Locals): string {
     const phrase = this.store.snapshot.get(key);
+
     if (phrase) {
       return phrase.translate(locals);
     } else {

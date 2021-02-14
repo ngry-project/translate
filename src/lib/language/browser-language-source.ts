@@ -2,20 +2,20 @@ import { fromEvent, Observable } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
 import { Inject, Injectable } from '@angular/core';
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '../configuration/root-configuration';
-import { LanguageID } from './language-id';
+import { Language } from './language';
 import { LanguageSource } from './language-source';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BrowserLanguageSource extends LanguageSource {
-  private readonly defaultLanguage: LanguageID;
-  private readonly knownLanguages: ReadonlySet<LanguageID>;
+  private readonly defaultLanguage: Language;
+  private readonly knownLanguages: ReadonlySet<Language>;
 
-  readonly language$: Observable<LanguageID>;
+  readonly language$: Observable<Language>;
 
-  get language(): LanguageID {
-    let language: LanguageID = navigator.language.slice(0, 2).toLowerCase();
+  get language(): Language {
+    let language: Language = navigator.language.slice(0, 2).toLowerCase();
 
     if (!this.knownLanguages.has(language)) {
       language = this.defaultLanguage;
@@ -25,8 +25,8 @@ export class BrowserLanguageSource extends LanguageSource {
   }
 
   constructor(
-    @Inject(DEFAULT_LANGUAGE) defaultLanguage: LanguageID,
-    @Inject(SUPPORTED_LANGUAGES) supportedLanguages: Array<LanguageID>,
+    @Inject(DEFAULT_LANGUAGE) defaultLanguage: Language,
+    @Inject(SUPPORTED_LANGUAGES) supportedLanguages: Array<Language>,
   ) {
     super();
     this.defaultLanguage = defaultLanguage;

@@ -1,7 +1,7 @@
 import { InOperator } from './in-operator';
 
 describe('InOperator', () => {
-  describe('test(value)', () => {
+  describe('test', () => {
     it('should throw error when value type is not string, numeric or boolean', () => {
       const operator = new InOperator('en', 'uikit', 'button', 'param', [1, true, 'yes']);
 

@@ -1,5 +1,4 @@
 import { PhraseData } from '../phrase/phrase-data';
+import { PhraseKey } from '../phrase/phrase-key';
 
-export interface BundleData {
-  [phraseKey: string]: PhraseData;
-}
+export type BundleData = Record<PhraseKey, PhraseData>;

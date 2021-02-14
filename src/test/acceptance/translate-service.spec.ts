@@ -1,21 +1,28 @@
-import { ReplaySubject } from 'rxjs';
-import { skip, take, toArray } from 'rxjs/operators';
+import { skip, take } from 'rxjs/operators';
 import { TestBed } from '@angular/core/testing';
-import { BundleToken } from '../../lib/bundle/bundle-token';
-import { BundleCollectionStore } from '../../lib/bundle/bundle-collection-store';
-import { LanguageStore } from '../../lib/language/language-store';
-import { TranslateService } from '../../lib/translate/translate.service';
-import { TranslateModule } from '../../lib/translate/translate.module';
-import { FakeLanguageSource } from '../../lib/testing/fake-language-source';
-import { FakeLanguageChangeHandler } from '../../lib/testing/fake-language-change-handler';
 import { BundleRepositoryFixture } from '../fixture/bundle-repository-fixture';
+import {
+  ActiveLanguage,
+  BundleRepository,
+  BundleRequest,
+  FakeBundleRepository,
+  FakeLanguageChangeHandler,
+  FakeLanguageSource,
+  LanguageChangeHandler,
+  LanguageSource,
+  TranslateModule,
+  TranslateService,
+} from '../../public-api';
+import { BundleCollectionStore } from '../../lib/bundle/bundle-collection-store';
+import { DefaultLanguageChangeHandler } from '../../lib/language/default-language-change-handler';
+import { BundleToken } from '../../lib/bundle/bundle-token';
 
-describe('Feature: TranslateService', () => {
+describe('TranslateService', () => {
 
-  describe('Scenario: getting instant translation when bundles are not yet loaded', () => {
-    let bundlesStore: BundleCollectionStore;
-    let languageStore: LanguageStore;
+  describe('getting instant translation when bundles have not been loaded yet', () => {
+    let activeLanguage: ActiveLanguage;
     let translateService: TranslateService;
+    let bundleRepository: FakeBundleRepository;
 
     beforeAll(() => {
       TestBed.configureTestingModule({
@@ -29,11 +36,13 @@ describe('Feature: TranslateService', () => {
                 useValue: ['en', 'ua'],
               },
               source: {
-                useExisting: FakeLanguageSource,
+                useFactory(): FakeLanguageSource {
+                  return new FakeLanguageSource('en');
+                },
               },
-              change: {
-                handler: {
-                  useExisting: FakeLanguageChangeHandler,
+              handler: {
+                change: {
+                  useExisting: DefaultLanguageChangeHandler,
                 },
               },
             },
@@ -49,38 +58,43 @@ describe('Feature: TranslateService', () => {
         ],
       });
 
-      bundlesStore = TestBed.inject(BundleCollectionStore);
-      languageStore = TestBed.inject(LanguageStore);
+      activeLanguage = TestBed.inject(ActiveLanguage);
       translateService = TestBed.inject(TranslateService);
+      bundleRepository = TestBed.inject(BundleRepository) as FakeBundleRepository;
     });
 
-    describe('Given', () => {
-      test('current language is "en"', () => {
-        expect(languageStore.snapshot.currentLanguage).toBe('en');
+    describe('given', () => {
+      test('the active language equals to the default one', () => {
+        expect(activeLanguage.current).toBe('en');
       });
 
       test('known languages are "en" and "ua"', () => {
-        expect(languageStore.snapshot.supports('en')).toBe(true);
-        expect(languageStore.snapshot.supports('ua')).toBe(true);
+        expect(activeLanguage.supported.has('en')).toBe(true);
+        expect(activeLanguage.supported.has('ua')).toBe(true);
       });
     });
 
-    describe('When', () => {
-      test('bundle "form" is not yet loaded', () => {
-        expect(bundlesStore.snapshot.has(new BundleToken('form', 'en'))).toBe(false);
+    describe('when', () => {
+      test('the bundle has not been loaded yet', () => {
+        expect(bundleRepository.requests.length).toBe(1);
+        expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+
+        expect(bundleRepository.responses.length).toBe(0);
+
+        expect(bundleRepository.errors.length).toBe(0);
       });
     });
 
-    describe('Then', () => {
+    describe('then', () => {
       it('should return an empty string', () => {
         expect(translateService.instant('form.field.required')).toBe('');
       });
     });
   });
 
-  describe('Scenario: getting instant translation when bundles are loaded', () => {
+  describe('getting instant translation when bundles have been loaded', () => {
+    let activeLanguage: ActiveLanguage;
     let bundlesStore: BundleCollectionStore;
-    let languageStore: LanguageStore;
     let translateService: TranslateService;
 
     beforeAll(() => {
@@ -97,9 +111,9 @@ describe('Feature: TranslateService', () => {
               source: {
                 useExisting: FakeLanguageSource,
               },
-              change: {
-                handler: {
-                  useExisting: FakeLanguageChangeHandler,
+              handler: {
+                change: {
+                  useExisting: DefaultLanguageChangeHandler,
                 },
               },
             },
@@ -115,23 +129,23 @@ describe('Feature: TranslateService', () => {
         ],
       });
 
+      activeLanguage = TestBed.inject(ActiveLanguage);
       bundlesStore = TestBed.inject(BundleCollectionStore);
-      languageStore = TestBed.inject(LanguageStore);
       translateService = TestBed.inject(TranslateService);
     });
 
-    describe('Given', () => {
-      test('current language is "en"', () => {
-        expect(languageStore.snapshot.currentLanguage).toBe('en');
+    describe('given', () => {
+      test('the active language equals to the default one', () => {
+        expect(activeLanguage.current).toBe('en');
       });
 
-      test('known languages are "en" and "ua"', () => {
-        expect(languageStore.snapshot.supports('en')).toBe(true);
-        expect(languageStore.snapshot.supports('ua')).toBe(true);
+      test('multiple supported languages', () => {
+        expect(activeLanguage.supported.has('en')).toBe(true);
+        expect(activeLanguage.supported.has('ua')).toBe(true);
       });
     });
 
-    describe('When', () => {
+    describe('when', () => {
       test('bundle "form" is loaded', done => {
         bundlesStore.state.pipe(
           skip(1),
@@ -144,18 +158,20 @@ describe('Feature: TranslateService', () => {
       });
     });
 
-    describe('Then', () => {
+    describe('then', () => {
       it('should return phrase value', () => {
         expect(translateService.instant('form.field.required')).toBe('This field is required');
       });
     });
   });
 
-  describe('Scenario: receiving translation updates when language changes', () => {
-    let bundlesStore: BundleCollectionStore;
-    let languageStore: LanguageStore;
+  describe('receiving translation updates when language changes', () => {
+    let activeLanguage: ActiveLanguage;
     let translateService: TranslateService;
-    const translation = new ReplaySubject<string>();
+    let languageChangeHandler: FakeLanguageChangeHandler;
+    let languageSource: FakeLanguageSource;
+    let bundleRepository: FakeBundleRepository;
+    const translations: Array<string> = [];
 
     beforeAll(() => {
       TestBed.configureTestingModule({
@@ -171,8 +187,8 @@ describe('Feature: TranslateService', () => {
               source: {
                 useExisting: FakeLanguageSource,
               },
-              change: {
-                handler: {
+              handler: {
+                change: {
                   useExisting: FakeLanguageChangeHandler,
                 },
               },
@@ -189,72 +205,93 @@ describe('Feature: TranslateService', () => {
         ],
       });
 
-      bundlesStore = TestBed.inject(BundleCollectionStore);
-      languageStore = TestBed.inject(LanguageStore);
+      activeLanguage = TestBed.inject(ActiveLanguage);
+      languageSource = TestBed.inject(LanguageSource) as FakeLanguageSource;
+      languageChangeHandler = TestBed.inject(LanguageChangeHandler) as FakeLanguageChangeHandler;
+      bundleRepository = TestBed.inject(BundleRepository) as BundleRepositoryFixture;
       translateService = TestBed.inject(TranslateService);
 
-      translateService.translate('form.field.required').subscribe(translation);
-    });
-
-    describe('Given', () => {
-      test('initial language is "en"', () => {
-        expect(languageStore.snapshot.currentLanguage).toBe('en');
-      });
-
-      test('known languages are "en" and "ua"', () => {
-        expect(languageStore.snapshot.supports('en')).toBe(true);
-        expect(languageStore.snapshot.supports('ua')).toBe(true);
+      translateService.translate('form.field.required').subscribe(translation => {
+        translations.push(translation);
       });
     });
 
-    describe('When', () => {
-      test('bundle "form" is loaded for "en" language', done => {
-        bundlesStore.state.pipe(
+    describe('given', () => {
+      test('the active language equals to the default one', () => {
+        expect(activeLanguage.current).toBe('en');
+      });
+
+      test('multiple supported languages', () => {
+        expect(activeLanguage.supported.has('en')).toBe(true);
+        expect(activeLanguage.supported.has('ua')).toBe(true);
+      });
+    });
+
+    describe('when', () => {
+      test('the bundles have been loaded within the initial language', done => {
+        expect(bundleRepository.requests.length).toBe(1);
+        expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+        expect(bundleRepository.responses.length).toBe(0);
+        expect(bundleRepository.errors.length).toBe(0);
+
+        bundleRepository.responses$.pipe(
+          take(1),
+        ).subscribe(() => {
+          expect(bundleRepository.requests.length).toBe(1);
+          expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+          expect(bundleRepository.responses.length).toBe(1);
+          expect(bundleRepository.errors.length).toBe(0);
+
+          done();
+        });
+      });
+
+      test('the language source pushes an update', () => {
+        languageSource.next('ua');
+
+        expect(activeLanguage.current).toBe('en');
+        expect(languageChangeHandler.requests.all.length).toBe(1);
+        expect(languageChangeHandler.requests.pending.length).toBe(1);
+        expect(languageChangeHandler.responses.all.length).toBe(1);
+        expect(languageChangeHandler.responses.pending.length).toBe(1);
+
+        languageChangeHandler.approve();
+
+        expect(languageChangeHandler.requests.all.length).toBe(1);
+        expect(languageChangeHandler.requests.pending.length).toBe(0);
+        expect(languageChangeHandler.responses.all.length).toBe(1);
+        expect(languageChangeHandler.responses.pending.length).toBe(0);
+
+        expect(activeLanguage.current).toEqual('ua');
+      });
+
+      test('the bundles have been loaded within the new language', done => {
+        expect(bundleRepository.requests.length).toBe(2);
+        expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+        expect(bundleRepository.requests).toContainEqual(new BundleRequest('ua', 'form'));
+        expect(bundleRepository.responses.length).toBe(1);
+        expect(bundleRepository.errors.length).toBe(0);
+
+        bundleRepository.responses$.pipe(
           skip(1),
           take(1),
-        ).subscribe(snapshot => {
-          expect(snapshot.has(new BundleToken('form', 'en'))).toBe(true);
-
-          done();
-        });
-      });
-
-      test('set language to "ua"', done => {
-        languageStore.initLanguageChange('ua');
-
-        languageStore.currentLanguage$.pipe(
-          take(1),
-        ).subscribe(snapshot => {
-          expect(snapshot).toEqual('ua');
-
-          done();
-        });
-      });
-
-      test('bundle "form" is loaded for "ua" language', done => {
-        bundlesStore.state.pipe(
-          skip(1),
-          take(1),
-        ).subscribe(snapshot => {
-          expect(snapshot.has(new BundleToken('form', 'ua'))).toBe(true);
+        ).subscribe(() => {
+          expect(bundleRepository.requests.length).toBe(2);
+          expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+          expect(bundleRepository.requests).toContainEqual(new BundleRequest('ua', 'form'));
+          expect(bundleRepository.responses.length).toBe(2);
+          expect(bundleRepository.errors.length).toBe(0);
 
           done();
         });
       });
     });
 
-    describe('Then', () => {
-      it('should emit translation for "en" and "ua" languages', done => {
-        translation.pipe(
-          take(2),
-          toArray()
-        ).subscribe(snapshots => {
-          expect(snapshots.length).toBe(2);
-          expect(snapshots[0]).toBe('This field is required');
-          expect(snapshots[1]).toBe(`Обов'язкове поле`);
-
-          done();
-        });
+    describe('then', () => {
+      it('the translation is pushed for both initial and new languages', () => {
+        expect(translations.length).toBe(2);
+        expect(translations[0]).toBe('This field is required');
+        expect(translations[1]).toBe(`Обов'язкове поле`);
       });
     });
   });
