@@ -7,12 +7,9 @@ import { PhraseKey } from '../../../phrase-key';
 import { Parameter } from '../../../parameter';
 
 /**
- * Represents base for number comparison operators.
- * @see GreaterThanOperator
- * @see GreaterThanOrEqualOperator
- * @see LowerThanOperator
- * @see LowerThanOrEqualOperator
+ * Represents a base for number comparison operators.
  * @since 2.0.0
+ * @internal
  */
 export abstract class NumberComparisonOperator extends Operator<number> {
   /**
@@ -22,14 +19,7 @@ export abstract class NumberComparisonOperator extends Operator<number> {
   protected readonly value: number;
 
   /**
-   * Creates new instance.
-   * @param language Language name
-   * @param bundleId Bundle name
-   * @param phraseKey Phrase key
-   * @param property Property name
-   * @param value Right-side value
    * @throws {InvalidArgumentException} if value is not a number
-   * @since 2.0.0
    */
   constructor(language: Language, bundleId: BundleID, phraseKey: PhraseKey, property: Parameter, value: number) {
     super(language, bundleId, phraseKey, property, new DebugContext({language, bundleId, phraseKey, property, value}));
@@ -41,7 +31,6 @@ export abstract class NumberComparisonOperator extends Operator<number> {
 
   /**
    * Tests value.
-   * @param value Value to test
    * @throws {InvalidArgumentException} if value has not acceptable type
    * @since 2.0.0
    */

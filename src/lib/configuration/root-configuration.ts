@@ -2,16 +2,30 @@ import { InjectableProvider, InjectionToken } from '@angular/core';
 import { Language } from '../language/language';
 import { LanguageMapping } from '../language/language-mapping';
 
-export const SUPPORTED_LANGUAGES = new InjectionToken<Array<Language>>('SUPPORTED_LANGUAGES');
+/**
+ * An {@link InjectionToken} for default {@link Language}s.
+ * @since 2.0.0
+ * @internal
+ */
 export const DEFAULT_LANGUAGE = new InjectionToken<Language>('DEFAULT_LANGUAGE');
+
+/**
+ * An {@link InjectionToken} for {@link Array} of supported {@link Language}s.
+ * @since 2.0.0
+ * @internal
+ */
+export const SUPPORTED_LANGUAGES = new InjectionToken<Array<Language>>('SUPPORTED_LANGUAGES');
+
+/**
+ * An {@link InjectionToken} for {@link LanguageMapping}.
+ * @since 2.0.0
+ * @internal
+ */
 export const LANGUAGE_MAPPING = new InjectionToken<LanguageMapping>('LANGUAGE_MAPPING');
 
 /**
  * Represents root configuration.
  * @since 2.0.0
- * @see TranslateModule
- * @see TranslateModule.forRoot
- * @see RootTranslateModule
  */
 export interface RootConfiguration {
 
@@ -26,10 +40,6 @@ export interface RootConfiguration {
      * Must provide a {@link Language}.
      * It also serves as a fallback language in the case when non-supported language has been tried to use.
      * @since 2.0.0
-     * @see Language
-     * @see LanguageState
-     * @see LanguageStore
-     * @see DEFAULT_LANGUAGE
      */
     readonly default: InjectableProvider;
 
@@ -39,10 +49,6 @@ export interface RootConfiguration {
      * It prevents from using a language which is not supported.
      * By default list of supported languages includes only the default one.
      * @since 2.0.0
-     * @see Language
-     * @see LanguageState
-     * @see LanguageStore
-     * @see SUPPORTED_LANGUAGES
      */
     readonly supported?: InjectableProvider;
 
@@ -51,10 +57,6 @@ export interface RootConfiguration {
      * Must provide an instance of {@link LanguageMapping}.
      * When omitted, an empty mapping will be used.
      * @since 2.0.0
-     * @see LanguageMapping
-     * @see LanguageResolver
-     * @see LanguageStore
-     * @see LANGUAGE_MAPPING
      */
     readonly mapping?: InjectableProvider;
 
@@ -63,8 +65,6 @@ export interface RootConfiguration {
      * Must provide an implementation of {@link LanguageSource} which initiates the language change.
      * When omitted, the default implementation is {@link DefaultLanguageSource}.
      * @since 2.0.0
-     * @see LanguageSource
-     * @see DefaultLanguageSource
      */
     readonly source?: InjectableProvider;
 
@@ -79,8 +79,6 @@ export interface RootConfiguration {
        * Must provide an implementation of {@link LanguageChangeHandler} which will be used to confirm or decline the language change.
        * When omitted, the default implementation is {@link DefaultLanguageChangeHandler}.
        * @since 2.0.0
-       * @see LanguageChangeHandler
-       * @see DefaultLanguageChangeHandler
        */
       readonly change?: InjectableProvider;
     };
@@ -95,8 +93,6 @@ export interface RootConfiguration {
     /**
      * Provider of {@link BundleRepository} used to fetch bundles.
      * @since 2.0.0
-     * @see BundleRepository
-     * @see BundleSource.get
      */
     readonly repository: InjectableProvider;
 
@@ -109,9 +105,8 @@ export interface RootConfiguration {
       /**
        * Provider of missing bundle handler.
        * Must provide an implementation of {@link MissingBundleHandler} which will be used to react on missing bundle.
+       * When omitted, the default implementation is {@link DefaultMissingBundleHandler}.
        * @since 2.0.0
-       * @see MissingBundleHandler
-       * @see BundleSource.get
        */
       readonly missing?: InjectableProvider;
     }

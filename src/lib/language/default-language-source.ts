@@ -4,6 +4,12 @@ import { DEFAULT_LANGUAGE } from '../configuration/root-configuration';
 import { Language } from './language';
 import { LanguageSource } from './language-source';
 
+/**
+ * Represents an implementation of {@link LanguageSource} used by default.
+ * It simply uses the {@link DEFAULT_LANGUAGE} and does not push any updates.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -19,7 +25,7 @@ export class DefaultLanguageSource extends LanguageSource {
   }
 
   /**
-   * Gets Observable which notifies about language changes.
+   * Gets an {@link Observable} which notifies about language changes.
    * @since 2.0.0
    */
   get language$(): Observable<Language> {

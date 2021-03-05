@@ -3,28 +3,23 @@ import { Phrase } from '../phrase';
 import { Predicate } from './predicate/predicate';
 
 /**
- * Represents phrase option.
+ * Represents a phrase option.
  * @since 2.0.0
+ * @internal
  */
 export class PhraseOption {
   /**
-   * Gets option predicate.
+   * Gets an option {@link Predicate}.
    * @since 2.0.0
    */
   private readonly when: Predicate;
 
   /**
-   * Gets result phrase.
+   * Gets the result phrase.
    * @since 2.0.0
    */
   private readonly then: Phrase;
 
-  /**
-   * Creates new instance.
-   * @param when Phrase option predicate
-   * @param then Resulting phrase
-   * @since 2.0.0
-   */
   constructor(when: Predicate, then: Phrase) {
     this.when = when;
     this.then = then;
@@ -32,7 +27,6 @@ export class PhraseOption {
 
   /**
    * Determines whether this option compatible with locals.
-   * @param locals Locals
    * @since 2.0.0
    */
   test(locals: Locals): boolean {
@@ -41,7 +35,7 @@ export class PhraseOption {
 
   /**
    * Gets resulting phrase translations.
-   * @param locals Locals
+   * Passes {@link Locals} to the resulting {@link Phrase} for phrase variables interpolate.
    * @since 2.0.0
    */
   translate(locals?: Locals): string {
