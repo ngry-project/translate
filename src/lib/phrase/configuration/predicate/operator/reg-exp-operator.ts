@@ -8,9 +8,8 @@ import { Parameter } from '../../../parameter';
 
 /**
  * Represents {@link Operator} which matches values against regular expression.
- * @see RegExpOperatorSource
- * @see TranslationsCompiler.compileOperator
  * @since 2.0.0
+ * @internal
  */
 export class RegExpOperator extends Operator<string> {
   /**
@@ -20,21 +19,11 @@ export class RegExpOperator extends Operator<string> {
   private readonly pattern: RegExp;
 
   /**
-   * Creates new instance.
-   * @param language Language name
-   * @param bundleId Bundle name
-   * @param phraseKey Phrase key
-   * @param property Property name
-   * @param pattern RegExp pattern.
-   * @param flags RegExp flags.
    * @throws {Error} if language name is invalid
    * @throws {Error} if bundle name is empty
    * @throws {Error} if phrase key is empty
    * @throws {Error} if property name is empty
    * @throws {Error} if pattern is empty
-   * @see RegExpOperatorSource.pattern
-   * @see RegExpOperatorSource.flags
-   * @since 2.0.0
    */
   constructor(language: Language, bundleId: BundleID, phraseKey: PhraseKey, property: Parameter, pattern: string, flags?: string) {
     super(language, bundleId, phraseKey, property, new DebugContext({language, bundleId, phraseKey, property, pattern, flags}));
@@ -46,7 +35,6 @@ export class RegExpOperator extends Operator<string> {
 
   /**
    * Tests value.
-   * @param value Value to test
    * @throws {Error} if value has not acceptable type
    * @since 2.0.0
    */

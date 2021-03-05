@@ -1,36 +1,39 @@
 import { fromEvent, Observable } from 'rxjs';
 import { map, shareReplay, startWith } from 'rxjs/operators';
-import { Inject, Injectable } from '@angular/core';
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '../configuration/root-configuration';
+import { Injectable } from '@angular/core';
 import { Language } from './language';
 import { LanguageSource } from './language-source';
 
+/**
+ * Represents an implementation of {@link LanguageSource} which uses browser settings as language source.
+ * Initially, it takes the {@link Language} from {@link navigator.language} and listens to {@link Window.onlanguagechange} event
+ * to push {@link Language} updates when user changes language preferences in browsers settings.
+ * @since 2.0.0
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class BrowserLanguageSource extends LanguageSource {
-  private readonly defaultLanguage: Language;
-  private readonly knownLanguages: ReadonlySet<Language>;
-
+  /**
+   * Gets a stream of {@link Navigator.language} updates.
+   * @since 2.0.0
+   * @see Navigator.language
+   * @see Window.onlanguagechange
+   */
   readonly language$: Observable<Language>;
 
+  /**
+   * Gets a current {@link Language} from {@link Navigator.language}.
+   * @since 2.0.0
+   * @see Navigator.language
+   */
   get language(): Language {
-    let language: Language = navigator.language.slice(0, 2).toLowerCase();
-
-    if (!this.knownLanguages.has(language)) {
-      language = this.defaultLanguage;
-    }
-
-    return language;
+    return navigator.language;
   }
 
-  constructor(
-    @Inject(DEFAULT_LANGUAGE) defaultLanguage: Language,
-    @Inject(SUPPORTED_LANGUAGES) supportedLanguages: Array<Language>,
-  ) {
+  constructor() {
     super();
-    this.defaultLanguage = defaultLanguage;
-    this.knownLanguages = new Set(supportedLanguages);
+
     this.language$ = fromEvent(window, 'languagechange').pipe(
       map(() => this.language),
       startWith(this.language),

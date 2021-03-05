@@ -3,21 +3,21 @@ import {
   BrowserLanguageSource,
   BundleRepository,
   DEFAULT_LANGUAGE,
-  DefaultLanguageChangeHandler,
-  DefaultLanguageSource,
   FakeLanguageChangeHandler,
   FakeMissingBundleHandler,
   LANGUAGE_MAPPING,
   LanguageChangeHandler,
   LanguageSource,
   MissingBundleHandler,
-  NoopMissingBundleHandler,
-  RootTranslateService,
   SUPPORTED_LANGUAGES,
   TranslateModule,
   TranslateService,
 } from '../../public-api';
 import { BundleRepositoryFixture } from '../fixture/bundle-repository-fixture';
+import { DefaultMissingBundleHandler } from '../../lib/bundle/default-missing-bundle-handler';
+import { DefaultLanguageChangeHandler } from '../../lib/language/default-language-change-handler';
+import { DefaultLanguageSource } from '../../lib/language/default-language-source';
+import { RootTranslateService } from '../../lib/translate/root-translate.service';
 
 describe('TranslateModule', () => {
   describe('forRoot', () => {
@@ -305,7 +305,7 @@ describe('TranslateModule', () => {
 
         const missingBundleHandler = TestBed.inject(MissingBundleHandler);
 
-        expect(missingBundleHandler).toBeInstanceOf(NoopMissingBundleHandler);
+        expect(missingBundleHandler).toBeInstanceOf(DefaultMissingBundleHandler);
       });
 
       it(`should register MissingBundleHandler in root with custom implementation`, () => {

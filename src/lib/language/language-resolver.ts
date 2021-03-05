@@ -3,6 +3,11 @@ import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING, SUPPORTED_LANGUAGES } from '../conf
 import { Language } from './language';
 import { LanguageMapping } from './language-mapping';
 
+/**
+ * Represents a language resolver which resolves a {@link Language} of the {@link LanguageSource} to the supported one.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -15,6 +20,10 @@ export class LanguageResolver {
   ) {
   }
 
+  /**
+   * Resolves a {@link Language} of the {@link LanguageSource} to the supported one.
+   * @since 2.0.0
+   */
   resolve(language: Language): Language {
     const candidates = this.findTargets(language);
 

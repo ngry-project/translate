@@ -1,7 +1,7 @@
 import { ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import { BundleRepository } from '../bundle/bundle-repository';
 import { MissingBundleHandler } from '../bundle/missing-bundle-handler';
-import { NoopMissingBundleHandler } from '../bundle/noop-missing-bundle-handler';
+import { DefaultMissingBundleHandler } from '../bundle/default-missing-bundle-handler';
 import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING, RootConfiguration, SUPPORTED_LANGUAGES } from '../configuration/root-configuration';
 import { FEATURE_CONFIGURATION, FeatureConfiguration } from '../configuration/feature-configuration';
 import { Language } from '../language/language';
@@ -14,6 +14,10 @@ import { FeatureTranslateModule } from './feature-translate.module';
 import { TranslateService } from './translate.service';
 import { RootTranslateService } from './root-translate.service';
 
+/**
+ * Represents a main translation module.
+ * @since 2.0.0
+ */
 @NgModule()
 export class TranslateModule {
 
@@ -27,7 +31,7 @@ export class TranslateModule {
         } as Provider,
         {
           provide: SUPPORTED_LANGUAGES,
-          ...(options.language.supported ? options.language.supported : {
+          ...(options.language.supported ?? {
             useFactory(language: Language): Array<Language> {
               return [language];
             },
@@ -36,19 +40,19 @@ export class TranslateModule {
         } as Provider,
         {
           provide: LANGUAGE_MAPPING,
-          ...(options.language.mapping ? options.language.mapping : {
+          ...(options.language.mapping ?? {
             useValue: {},
           }),
         } as Provider,
         {
           provide: LanguageChangeHandler,
-          ...(options.language.handler?.change ? options.language.handler.change : {
+          ...(options.language.handler?.change ?? {
             useExisting: DefaultLanguageChangeHandler,
           }),
         } as Provider,
         {
           provide: LanguageSource,
-          ...(options.language.source ? options.language.source : {
+          ...(options.language.source ?? {
             useExisting: DefaultLanguageSource,
           }),
         } as Provider,
@@ -58,8 +62,8 @@ export class TranslateModule {
         } as Provider,
         {
           provide: MissingBundleHandler,
-          ...(options.bundle.handler?.missing ? options.bundle.handler.missing : {
-            useExisting: NoopMissingBundleHandler,
+          ...(options.bundle.handler?.missing ?? {
+            useExisting: DefaultMissingBundleHandler,
           }),
         } as Provider,
         {

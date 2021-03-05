@@ -10,14 +10,8 @@ import { PhraseKey } from '../phrase-key';
  * Represents configured phrase. Configured phrase is implementation of {@link Phrase}
  * which picks one of phrase variants for which predicate returns true.
  * If none of variants predicate succeeded, {@link fallback} value will be returned.
- * @see PhraseCompiler.compilePhrase
- * @see PhraseSource
- * @see ConfiguredPhraseSource
- * @see Phrase
- * @see PhraseOption
- * @see Predicate
- * @see Operator
  * @since 2.0.0
+ * @internal
  */
 export class ConfiguredPhrase extends Phrase {
   /**
@@ -33,17 +27,10 @@ export class ConfiguredPhrase extends Phrase {
   private readonly fallback: string;
 
   /**
-   * Creates new instance.
-   * @param language Language code
-   * @param bundleId Bundle ID
-   * @param phraseKey Phrase key
-   * @param options Phrase options
-   * @param fallback Phrase fallback
    * @throws {InvalidArgumentException} if options list is empty
    * @throws {InvalidArgumentException} if language name is invalid
    * @throws {InvalidArgumentException} if bundle name is empty
    * @throws {InvalidArgumentException} if phrase key is empty
-   * @since 2.0.0
    */
   constructor(language: Language, bundleId: BundleID, phraseKey: PhraseKey, options: Array<PhraseOption>, fallback: string = '') {
     super(language, bundleId, phraseKey);
@@ -56,11 +43,6 @@ export class ConfiguredPhrase extends Phrase {
 
   /**
    * Gets translation based on phrase configuration and {@link Locals}.
-   * @param locals Locals
-   * @see Phrase.translate
-   * @see TranslateService.translate
-   * @see TranslateService.instant
-   * @see TranslatePipe
    * @since 2.0.0
    */
   translate(locals: Locals): string {

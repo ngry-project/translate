@@ -11,6 +11,11 @@ import { PhraseOption } from './configuration/phrase-option';
 import { ConfiguredPhrase } from './configuration/configured-phrase';
 import { PredicateCompiler } from './configuration/predicate/predicate-compiler';
 
+/**
+ * Represents a phrase compiler which converts a raw {@link PhraseData} into corresponding implementation of {@link Phrase}.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -21,6 +26,10 @@ export class PhraseCompiler {
   ) {
   }
 
+  /**
+   * Converts a raw {@link PhraseData} into corresponding implementation of {@link Phrase}.
+   * @since 2.0.0
+   */
   compile(language: Language, bundleId: BundleID, phraseKey: PhraseKey, phraseData: PhraseData): Phrase {
     if (typeof phraseData === 'string') {
       if (TemplatePhrase.test(phraseData)) {

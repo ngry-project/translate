@@ -4,7 +4,7 @@ import { PhraseOptionData } from './phrase-option-data';
  * Represents source of configured phrase.
  * @since 2.0.0
  */
-export interface ConfiguredPhraseData {
+export type ConfiguredPhraseData = {
   /**
    * Gets list of phrase options.
    * Phrase can take one of these options under certain conditions.
@@ -17,4 +17,4 @@ export interface ConfiguredPhraseData {
    * @since 2.0.0
    */
   readonly fallback?: string;
-}
+};

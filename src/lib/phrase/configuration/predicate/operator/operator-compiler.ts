@@ -3,6 +3,7 @@ import { Operator } from './operator';
 import { BundleID } from '../../../../bundle/bundle-id';
 import { Language } from '../../../../language/language';
 import { DebugContext } from '../../../../support/debug-context';
+import { Parameter } from '../../../parameter';
 import { PhraseKey } from '../../../phrase-key';
 import { GreaterThanOperator } from './greater-than-operator';
 import { GreaterThanOrEqualOperator } from './greater-than-or-equal-operator';
@@ -12,8 +13,12 @@ import { EqualOperator } from './equal-operator';
 import { InOperator } from './in-operator';
 import { RegExpOperator } from './reg-exp-operator';
 import { OperatorData } from './operator-data';
-import { Parameter } from '../../../parameter';
 
+/**
+ * Represents an operator compiler.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -21,19 +26,7 @@ export class OperatorCompiler {
 
   /**
    * Converts operator source data to operator object model.
-   * @param language Language code
-   * @param bundleId Bundle name
-   * @param phraseKey Phrase key
-   * @param property Property name in {@link Locals}
-   * @param operatorData Operator sources
    * @throws {UnknownOperatorException}
-   * @see EqualOperator
-   * @see GreaterThanOperator
-   * @see GreaterThanOrEqualOperator
-   * @see InOperator
-   * @see LowerThanOperator
-   * @see LowerThanOrEqualOperator
-   * @see RegExpOperator
    * @since 2.0.0
    */
   compile(

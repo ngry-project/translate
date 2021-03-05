@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { ActiveLanguage, FakeLanguageSource, LanguageResolver, LanguageSource, TranslateModule } from '../../public-api';
+import { ActiveLanguage, FakeLanguageSource, LanguageSource, TranslateModule } from '../../public-api';
+import { LanguageResolver } from '../../lib/language/language-resolver';
 import { BundleRepositoryFixture } from '../fixture/bundle-repository-fixture';
 
 describe('language mapping', () => {
