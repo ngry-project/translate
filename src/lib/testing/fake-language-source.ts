@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, NextObserver } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { DEFAULT_LANGUAGE } from '../configuration/root-configuration';
+import { DEFAULT_LANGUAGE } from '../configuration/injection-token';
 import { Language } from '../language/language';
 import { LanguageSource } from '../language/language-source';
 

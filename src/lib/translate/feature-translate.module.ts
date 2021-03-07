@@ -1,7 +1,8 @@
 import { Inject, NgModule, Optional } from '@angular/core';
 import { BundleCollectionStore } from '../bundle/bundle-collection-store';
 import { BundlesRequest } from '../bundle/bundles-request';
-import { FEATURE_CONFIGURATION, FeatureConfiguration } from '../configuration/feature-configuration';
+import { FeatureConfiguration } from '../configuration/feature-configuration';
+import { FEATURE_CONFIGURATION } from '../configuration/injection-token';
 import { LanguageStore } from '../language/language-store';
 import { TranslatePipe } from './translate.pipe';
 

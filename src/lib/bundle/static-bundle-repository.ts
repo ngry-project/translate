@@ -13,7 +13,7 @@ import { StaticBundleRepositoryData } from './static-bundle-repository-data';
 export class StaticBundleRepository extends BundleRepository {
 
   constructor(
-    private readonly data: StaticBundleRepositoryData,
+    private readonly data: StaticBundleRepositoryData = {},
   ) {
     super();
   }
