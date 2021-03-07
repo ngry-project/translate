@@ -42,6 +42,7 @@ export * from './lib/testing/fake-bundle-repository';
 export * from './lib/testing/fake-language-change-handler';
 export * from './lib/testing/fake-language-source';
 export * from './lib/testing/fake-missing-bundle-handler';
+export * from './lib/testing/fake-translate.service';
 
 export * from './lib/translate/translate.module';
 export * from './lib/translate/translate.pipe';

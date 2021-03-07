@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Inject, Injectable } from '@angular/core';
 import { StoreBase } from '@ngry/store';
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '../configuration/root-configuration';
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '../configuration/injection-token';
 import { Language } from './language';
 import { LanguageChangeHandler } from './language-change-handler';
 import { LanguageChangeRequest } from './language-change-request';

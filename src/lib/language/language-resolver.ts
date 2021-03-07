@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING, SUPPORTED_LANGUAGES } from '../configuration/root-configuration';
+import { DEFAULT_LANGUAGE, LANGUAGE_MAPPING, SUPPORTED_LANGUAGES } from '../configuration/injection-token';
 import { Language } from './language';
 import { LanguageMapping } from './language-mapping';
 

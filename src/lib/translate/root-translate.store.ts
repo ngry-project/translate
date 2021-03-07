@@ -1,5 +1,5 @@
-import { combineLatest, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { EntityCollectionStore } from '@ngry/store';
 import { BundleCollectionStore } from '../bundle/bundle-collection-store';
@@ -19,7 +19,6 @@ import { PhraseKey } from '../phrase/phrase-key';
   providedIn: 'root',
 })
 export class RootTranslateStore extends EntityCollectionStore<PhraseKey, Phrase, PhraseCollection> {
-  private subscription: Subscription = new Subscription();
 
   constructor(
     private bundleCollectionStore: BundleCollectionStore,
@@ -34,29 +33,27 @@ export class RootTranslateStore extends EntityCollectionStore<PhraseKey, Phrase,
     this.initMissingBundlesLoading();
   }
 
-  private initLanguageChange(): void {
-    this.subscription.add(
-      combineLatest([
+  private initLanguageChange = this.effect((value$: Observable<void>) => {
+    return value$.pipe(
+      switchMap(() => combineLatest([
         this.languageStore.current$,
         this.bundleCollectionStore.state,
       ]).pipe(
         map(([language, bundles]) => bundles.collectPhrasesOf(language)),
-      ).subscribe(state => this.next(state)),
+        tap(state => this.next(state)),
+      )),
     );
-  }
+  });
 
-  private initMissingBundlesLoading(): void {
-    this.subscription.add(
-      this.languageStore.current$.subscribe(language => {
-        const bundleIds = this.bundleRegistry.ids;
+  private initMissingBundlesLoading = this.effect((value$: Observable<void>) => {
+    return value$.pipe(
+      switchMap(() => this.languageStore.current$.pipe(
+        tap(language => {
+          const bundleIds = this.bundleRegistry.ids;
 
-        this.bundleCollectionStore.loadMany(new BundlesRequest(language, bundleIds));
-      }),
+          this.bundleCollectionStore.loadMany(new BundlesRequest(language, bundleIds));
+        }),
+      )),
     );
-  }
-
-  complete(): void {
-    this.subscription.unsubscribe();
-    super.complete();
-  }
+  });
 }
