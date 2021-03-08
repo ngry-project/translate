@@ -81,6 +81,35 @@ yarn add @ngry/translate
 
 ## Root configuration
 
+You can configure the translation module in the app root by using `TranslateModule.forRoot` method.
+
+In the simplest case you need to provide a default language, and an implementation of bundles repository:
+
+```ts
+import { NgModule } from '@angular/core';
+import { TranslateModule } from '@ngry/translate';
+import { CustomBundleRepository } from './support/translate/custom-bundle-repository';
+
+@NgModule({
+  imports: [
+    TranslateModule.forRoot({
+      language: {
+        default: {
+          useValue: 'en',
+        },
+      },
+      bundle: {
+        repository: {
+          useExisting: CustomBundleRepository,
+        },
+      },
+    }),
+  ],
+})
+export class AppModule {
+}
+```
+
 ### Default language
 
 Usually, the default language is a primary language supported by your product. It also serves as a fallback in uncertain
@@ -313,12 +342,18 @@ To implement a custom bundle repository, you need to extend a `BundleRepository`
 
 ### Missing bundle handler
 
-Missing bundle handler is an entity
+Missing bundle handler is an entity which handles failed bundle requests.
+
+When a bundle repository fails to handle a bundle request (for example, the bundle does not exist), then missing bundle
+handler tries to find a workaround.
+
+Declare a provider of the missing bundle handler in the root module:
 
 ```ts
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngry/translate';
 import { CustomBundleRepository } from './support/translate/custom-bundle-repository';
+import { CustomMissingBundleHandler } from './support/translate/custom-missing-bundle-handler';
 
 @NgModule({
   imports: [
@@ -332,6 +367,11 @@ import { CustomBundleRepository } from './support/translate/custom-bundle-reposi
         repository: {
           useExisting: CustomBundleRepository,
         },
+        handler: {
+          missing: {
+            useExisting: CustomMissingBundleHandler,
+          },
+        },
       },
     }),
   ],
@@ -341,6 +381,47 @@ export class AppModule {
 ```
 
 To implement a custom bundle repository, you need to extend a `MissingBundleHandler` abstract class.
+
+## Feature configuration
+
+You can configure every lazy-loaded module separately by importing the translation module this way:
+
+```ts
+import { NgModule } from '@angular/core';
+import { TranslateModule } from './translate.module';
+
+@NgModule({
+  imports: [
+    TranslateModule.forFeature({
+      bundles: ['user'],
+    }),
+  ],
+})
+export class UserModule {
+}
+```
+
+### Bundles list
+
+As lazy modules are being loaded on demand when you visit specific route, then why not to load a bundle of translations
+for it in a lazy manner as way?
+
+You achieve that by creating feature module where you can specify which bundle(s) to load once it's being initialized.
+
+```ts
+import { NgModule } from '@angular/core';
+import { TranslateModule } from './translate.module';
+
+@NgModule({
+  imports: [
+    TranslateModule.forFeature({
+      bundles: ['user'],
+    }),
+  ],
+})
+export class UserModule {
+}
+```
 
 ## License
 
