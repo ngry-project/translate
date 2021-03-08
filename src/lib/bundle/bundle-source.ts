@@ -1,8 +1,9 @@
 import { EMPTY, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Bundle } from './bundle';
 import { BundleCompiler } from './bundle-compiler';
+import { BundleDataFilter } from './bundle-data-filter';
 import { BundleRegistry } from './bundle-registry';
 import { BundleRepository } from './bundle-repository';
 import { BundleRequest } from './bundle-request';
@@ -22,6 +23,7 @@ export class BundleSource {
     private readonly registry: BundleRegistry,
     private readonly repository: BundleRepository,
     private readonly handler: MissingBundleHandler,
+    private readonly filter: BundleDataFilter,
     private readonly compiler: BundleCompiler,
   ) {
   }
@@ -34,6 +36,7 @@ export class BundleSource {
     if (this.registry.register(request.language, request.bundleId)) {
       return this.repository.get(request).pipe(
         catchError(() => this.handler.handle(request)),
+        tap(bundleData => this.filter.filter(bundleData)),
         map(bundleData => this.compiler.compile(request.language, request.bundleId, bundleData)),
       );
     } else {
