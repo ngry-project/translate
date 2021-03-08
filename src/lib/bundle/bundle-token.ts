@@ -1,23 +1,37 @@
-import { LanguageID } from '../language/language-id';
+import { Language } from '../language/language';
 import { BundleID } from './bundle-id';
 
 /**
  * Represents bundle's unique token (aka composite primary key).
  * @since 2.0.0
+ * @internal
  */
 export class BundleToken {
-  private readonly bundleId: BundleID;
-  private readonly languageId: LanguageID;
+  /**
+   * Gets a {@link BundleID} component of this token.
+   * @since 2.0.0
+   */
+  private readonly id: BundleID;
+
+  /**
+   * Gets a {@link Language} component of token.
+   * @since 2.0.0
+   */
+  private readonly language: Language;
 
   constructor(
-    bundleId: BundleID,
-    languageId: LanguageID,
+    id: BundleID,
+    language: Language,
   ) {
-    this.bundleId = bundleId;
-    this.languageId = languageId;
+    this.id = id;
+    this.language = language;
   }
 
+  /**
+   * Checks for equality of this token and the other one.
+   * @since 2.0.0
+   */
   equals(other: BundleToken): boolean {
-    return this.bundleId === other.bundleId && this.languageId === other.languageId;
+    return this.id === other.id && this.language === other.language;
   }
 }

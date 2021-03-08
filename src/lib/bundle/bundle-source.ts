@@ -1,37 +1,46 @@
 import { EMPTY, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Bundle } from './bundle';
-import { BundleID } from './bundle-id';
+import { BundleCompiler } from './bundle-compiler';
+import { BundleDataFilter } from './bundle-data-filter';
 import { BundleRegistry } from './bundle-registry';
 import { BundleRepository } from './bundle-repository';
-import { LanguageID } from '../language/language-id';
-import { BundleCompiler } from './bundle-compiler';
+import { BundleRequest } from './bundle-request';
+import { MissingBundleHandler } from './missing-bundle-handler';
 
+/**
+ * Represents a source of bundles.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class BundleSource {
+
   constructor(
-    private repository: BundleRepository,
-    private registry: BundleRegistry,
-    private compiler: BundleCompiler,
+    private readonly registry: BundleRegistry,
+    private readonly repository: BundleRepository,
+    private readonly handler: MissingBundleHandler,
+    private readonly filter: BundleDataFilter,
+    private readonly compiler: BundleCompiler,
   ) {
   }
 
-  get(languageId: LanguageID, bundleId: BundleID): Observable<Bundle> {
-    const registered = this.registry.has(languageId, bundleId);
-
-    if (registered) {
+  /**
+   * Gets the {@link Bundle} by executing the {@link BundleRequest}.
+   * @since 2.0.0
+   */
+  get(request: BundleRequest): Observable<Bundle | never> {
+    if (this.registry.register(request.language, request.bundleId)) {
+      return this.repository.get(request).pipe(
+        catchError(() => this.handler.handle(request)),
+        tap(bundleData => this.filter.filter(bundleData)),
+        map(bundleData => this.compiler.compile(request.language, request.bundleId, bundleData)),
+      );
+    } else {
       return EMPTY;
     }
-
-    this.registry.register(languageId, bundleId);
-
-    return this.repository.get(languageId, bundleId).pipe(
-      map(bundleData => this.compiler.compile(languageId, bundleId, bundleData)),
-      // todo: delegate error handling to BundleErrorHandler
-      catchError(() => EMPTY),
-    );
   }
 }

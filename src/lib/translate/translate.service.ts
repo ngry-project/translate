@@ -11,8 +11,6 @@ export abstract class TranslateService {
   /**
    * Gets instant phrase translation by its key.
    * Also, local variables may be provided to compile the template phrase.
-   * @param key Phrase key
-   * @param locals Local variables to compile template phrase
    * @since 2.0.0
    */
   abstract instant(key: PhraseKey, locals?: Locals): string;
@@ -20,8 +18,6 @@ export abstract class TranslateService {
   /**
    * Gets stream of phrase translation by its key.
    * Also, local variables may be provided to compile the template phrase.
-   * @param key Phrase key
-   * @param locals Local variables to compile template phrase
    * @since 2.0.0
    */
   abstract translate(key: PhraseKey, locals?: Locals): Observable<string>;

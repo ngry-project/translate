@@ -1,19 +1,28 @@
 import { Phrase } from './phrase';
-import { LanguageID } from '../language/language-id';
 import { BundleID } from '../bundle/bundle-id';
-import { PhraseKey } from './phrase-key';
+import { Language } from '../language/language';
 import { Locals } from './locals';
+import { PhraseKey } from './phrase-key';
 
+/**
+ * Represents an implementation of {@link Phrase} which uses a simple text value.
+ * @since 2.0.0
+ * @internal
+ */
 export class PlainTextPhrase extends Phrase {
-  private readonly translation: string;
+  private readonly content: string;
 
-  constructor(languageId: LanguageID, bundleId: BundleID, key: PhraseKey, translation: string) {
-    super(languageId, bundleId, key);
+  constructor(language: Language, bundleId: BundleID, key: PhraseKey, content: string) {
+    super(language, bundleId, key);
 
-    this.translation = translation;
+    this.content = content;
   }
 
+  /**
+   * Gets a text content of this {@link Phrase}.
+   * @since 2.0.0
+   */
   translate(locals?: Locals): string {
-    return this.translation;
+    return this.content;
   }
 }

@@ -1,37 +1,50 @@
 import { from, Observable } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { mergeMap, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { EntityCollectionStore } from '@ngry/store';
 import { Bundle } from './bundle';
-import { BundleID } from './bundle-id';
 import { BundleCollection } from './bundle-collection';
-import { BundleToken} from './bundle-token';
+import { BundleToken } from './bundle-token';
 import { BundleSource } from './bundle-source';
-import { LanguageID } from '../language/language-id';
+import { BundleRequest } from './bundle-request';
+import { BundlesRequest } from './bundles-request';
 
+/**
+ * Represents store of all loaded {@link Bundle}s.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class BundleCollectionStore extends EntityCollectionStore<BundleToken, Bundle, BundleCollection> {
+
   constructor(
-    private source: BundleSource,
+    private readonly source: BundleSource,
   ) {
     super(new BundleCollection());
   }
 
-  readonly load = this.effect((action$: Observable<{ languageId: LanguageID, bundleId: BundleID }>) => {
-    return action$.pipe(
-      mergeMap(action => this.source.get(action.languageId, action.bundleId)),
-      map(bundle => this.snapshot.add(bundle)),
-      tap(collection => this.next(collection)),
+  /**
+   * Loads single {@link Bundle} as adds it to collection.
+   * @since 2.0.0
+   */
+  readonly load = this.effect((request$: Observable<BundleRequest>) => {
+    return request$.pipe(
+      mergeMap(request => this.source.get(request)),
+      tap(bundle => this.add(bundle)),
     );
   });
 
-  readonly loadMany = this.effect((action$: Observable<{ languageId: LanguageID, bundleIds: Iterable<BundleID> }>) => {
-    return action$.pipe(
-      mergeMap(({languageId, bundleIds}) => {
-        return from(bundleIds).pipe(
-          tap(bundleId => this.load({languageId, bundleId})),
+  /**
+   * Loads multiple {@link Bundle}s add adds them to collection.
+   * @since 2.0.0
+   */
+  readonly loadMany = this.effect((request$: Observable<BundlesRequest>) => {
+    return request$.pipe(
+      mergeMap(request => {
+        return from(request.bundleIds).pipe(
+          tap(bundleId => this.load(new BundleRequest(request.language, bundleId))),
         );
       }),
     );

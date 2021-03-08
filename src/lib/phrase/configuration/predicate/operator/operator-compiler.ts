@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Operator } from './operator';
 import { BundleID } from '../../../../bundle/bundle-id';
-import { LanguageID } from '../../../../language/language-id';
+import { Language } from '../../../../language/language';
 import { DebugContext } from '../../../../support/debug-context';
+import { Parameter } from '../../../parameter';
 import { PhraseKey } from '../../../phrase-key';
 import { GreaterThanOperator } from './greater-than-operator';
 import { GreaterThanOrEqualOperator } from './greater-than-or-equal-operator';
@@ -13,6 +14,11 @@ import { InOperator } from './in-operator';
 import { RegExpOperator } from './reg-exp-operator';
 import { OperatorData } from './operator-data';
 
+/**
+ * Represents an operator compiler.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })
@@ -20,104 +26,92 @@ export class OperatorCompiler {
 
   /**
    * Converts operator source data to operator object model.
-   * @param languageId Language name
-   * @param bundleId Bundle name
-   * @param phraseKey Phrase key
-   * @param propertyName Property name in {@link Locals}
-   * @param operatorData Operator sources
    * @throws {UnknownOperatorException}
-   * @see EqualOperator
-   * @see GreaterThanOperator
-   * @see GreaterThanOrEqualOperator
-   * @see InOperator
-   * @see LowerThanOperator
-   * @see LowerThanOrEqualOperator
-   * @see RegExpOperator
    * @since 2.0.0
    */
   compile(
-    languageId: LanguageID,
+    language: Language,
     bundleId: BundleID,
     phraseKey: PhraseKey,
-    propertyName: string,
+    property: Parameter,
     operatorData: OperatorData,
   ): Operator {
     if ('$gt' in operatorData) {
       return new GreaterThanOperator(
-        languageId,
+        language,
         bundleId,
         phraseKey,
-        propertyName,
+        property,
         operatorData.$gt,
       );
     }
 
     if ('$gte' in operatorData) {
       return new GreaterThanOrEqualOperator(
-        languageId,
+        language,
         bundleId,
         phraseKey,
-        propertyName,
+        property,
         operatorData.$gte,
       );
     }
 
     if ('$lt' in operatorData) {
       return new LowerThanOperator(
-        languageId,
+        language,
         bundleId,
         phraseKey,
-        propertyName,
+        property,
         operatorData.$lt,
       );
     }
 
     if ('$lte' in operatorData) {
       return new LowerThanOrEqualOperator(
-        languageId,
+        language,
         bundleId,
         phraseKey,
-        propertyName,
+        property,
         operatorData.$lte,
       );
     }
 
     if ('$eq' in operatorData) {
       return new EqualOperator(
-        languageId,
+        language,
         bundleId,
         phraseKey,
-        propertyName,
+        property,
         operatorData.$eq,
       );
     }
 
     if ('$in' in operatorData) {
       return new InOperator(
-        languageId,
+        language,
         bundleId,
         phraseKey,
-        propertyName,
+        property,
         operatorData.$in,
       );
     }
 
     if ('$regexp' in operatorData) {
       return new RegExpOperator(
-        languageId,
+        language,
         bundleId,
         phraseKey,
-        propertyName,
+        property,
         operatorData.$regexp,
         operatorData.$flags,
       );
     }
 
     const debugContext = new DebugContext({
-      languageId,
+      language,
       bundleId,
       phraseKey,
-      propertyName,
+      property,
       operatorData,
     });
 

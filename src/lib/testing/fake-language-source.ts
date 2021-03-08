@@ -1,20 +1,25 @@
-import { BehaviorSubject, NextObserver, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, NextObserver } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { LanguageID } from '../language/language-id';
+import { DEFAULT_LANGUAGE } from '../configuration/injection-token';
+import { Language } from '../language/language';
 import { LanguageSource } from '../language/language-source';
-import { DEFAULT_LANGUAGE } from '../configuration/root-configuration';
 
+/**
+ * Represents an implementation of {@link LanguageSource} for testing which uses {@link DEFAULT_LANGUAGE} for initial value and
+ * allows for pushing changes.
+ * @since 2.0.0
+ */
 @Injectable({
   providedIn: 'root',
 })
-export class FakeLanguageSource extends LanguageSource implements NextObserver<LanguageID> {
-  private readonly languageSubject: BehaviorSubject<LanguageID>;
+export class FakeLanguageSource extends LanguageSource implements NextObserver<Language> {
+  private readonly languageSubject: BehaviorSubject<Language>;
 
   /**
    * Gets ID of current language.
    * @since 2.0.0
    */
-  get language(): LanguageID {
+  get language(): Language {
     return this.languageSubject.value;
   }
 
@@ -22,18 +27,22 @@ export class FakeLanguageSource extends LanguageSource implements NextObserver<L
    * Gets Observable which notifies about language changes.
    * @since 2.0.0
    */
-  get language$(): Observable<LanguageID> {
+  get language$(): Observable<Language> {
     return this.languageSubject;
   }
 
   constructor(
-    @Inject(DEFAULT_LANGUAGE) defaultLanguage: LanguageID,
+    @Inject(DEFAULT_LANGUAGE) defaultLanguage: Language,
   ) {
     super();
     this.languageSubject = new BehaviorSubject(defaultLanguage);
   }
 
-  next(language: LanguageID): void {
+  /**
+   * Pushes {@link Language} change.
+   * @since 2.0.0
+   */
+  next(language: Language): void {
     this.languageSubject.next(language);
   }
 }

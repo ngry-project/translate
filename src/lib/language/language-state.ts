@@ -1,34 +1,52 @@
-import { LanguageID } from './language-id';
+import { Language } from './language';
 
+/**
+ * Represents a language state.
+ * @since 2.0.0
+ * @internal
+ */
 export class LanguageState {
-  private readonly defaultLanguage: LanguageID;
-  private readonly supportedLanguages: ReadonlySet<LanguageID>;
+  /**
+   * Get the current {@link Language}.
+   * @since 2.0.0
+   */
+  readonly current: Language;
 
-  readonly currentLanguage: LanguageID;
+  /**
+   * Gets the default {@link Language}.
+   * @since 2.0.0
+   */
+  readonly default: Language;
+
+  /**
+   * Gets the list of supported {@link Language}s.
+   * @since 2.0.0
+   */
+  readonly supported: ReadonlySet<Language>;
 
   constructor(
-    initialLanguage: LanguageID,
-    defaultLanguage: LanguageID,
-    supportedLanguages: Iterable<LanguageID>,
+    initialLanguage: Language,
+    defaultLanguage: Language,
+    supportedLanguages: Iterable<Language>,
   ) {
-    this.currentLanguage = initialLanguage;
-    this.defaultLanguage = defaultLanguage;
-    this.supportedLanguages = new Set(supportedLanguages);
+    this.current = initialLanguage;
+    this.default = defaultLanguage;
+    this.supported = new Set(supportedLanguages);
   }
 
-  setLanguage(language: LanguageID): LanguageState {
-    if (this.supports(language) && this.currentLanguage !== language) {
+  /**
+   * Produces a new {@link LanguageState} if the new language is different to the current one.
+   * @since 2.0.0
+   */
+  setLanguage(language: Language): LanguageState {
+    if (this.supported.has(language) && this.current !== language) {
       return new LanguageState(
         language,
-        this.defaultLanguage,
-        this.supportedLanguages,
+        this.default,
+        this.supported,
       );
     }
 
     return this;
-  }
-
-  supports(language: LanguageID): boolean {
-    return this.supportedLanguages.has(language);
   }
 }

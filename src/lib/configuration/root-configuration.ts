@@ -1,91 +1,91 @@
-import { InjectableProvider, InjectionToken } from '@angular/core';
-import { LanguageID } from '../language/language-id';
-import { LanguageMapping } from '../language/language-mapping';
-
-export const SUPPORTED_LANGUAGES = new InjectionToken<Iterable<LanguageID>>('SUPPORTED_LANGUAGES');
-export const DEFAULT_LANGUAGE = new InjectionToken<LanguageID>('DEFAULT_LANGUAGE');
-export const LANGUAGE_MAPPING = new InjectionToken<LanguageMapping>('LANGUAGE_MAPPING');
+import { InjectableProvider } from '@angular/core';
 
 /**
  * Represents root configuration.
  * @since 2.0.0
- * @see TranslateModule
- * @see TranslateModule.forRoot
- * @see RootTranslateModule
  */
 export interface RootConfiguration {
 
   /**
-   * Language configuration gives you control over set of supported languages and language change behavior.
+   * Configuration of language-related features.
    * @since 2.0.0
    */
   readonly language: {
 
     /**
      * Provider of default language.
-     * Must provide value of type {@link LanguageID}.
+     * Must provide a {@link Language}.
      * It also serves as a fallback language in the case when non-supported language has been tried to use.
      * @since 2.0.0
-     * @see LanguageID
-     * @see LanguageState
-     * @see LanguageStore
      */
     readonly default: InjectableProvider;
 
     /**
      * Provider of supported languages list.
-     * Must provide an {@link Array} or {@link LanguageID}s.
+     * Must provide an {@link Array} or {@link Language}s.
      * It prevents from using a language which is not supported.
+     * By default list of supported languages includes only the default one.
      * @since 2.0.0
-     * @see LanguageID
      */
-    readonly supported: InjectableProvider;
-
-    /**
-     * Provider of language source.
-     * Must provide an implementation of {@link LanguageSource} which initiates the language change.
-     * @since 2.0.0
-     * @see LanguageSource
-     */
-    readonly source: InjectableProvider;
+    readonly supported?: InjectableProvider;
 
     /**
      * Provider of language mapping.
      * Must provide an instance of {@link LanguageMapping}.
+     * When omitted, an empty mapping will be used.
      * @since 2.0.0
-     * @see LanguageMapping
      */
     readonly mapping?: InjectableProvider;
 
     /**
-     * Language change configuration.
+     * Provider of language source.
+     * Must provide an implementation of {@link LanguageSource} which initiates the language change.
+     * When omitted, the default implementation is {@link DefaultLanguageSource}.
      * @since 2.0.0
      */
-    readonly change: {
+    readonly source?: InjectableProvider;
+
+    /**
+     * Configuration of language handlers.
+     * @since 2.0.0
+     */
+    readonly handler?: {
 
       /**
        * Provider of language change handler.
        * Must provide an implementation of {@link LanguageChangeHandler} which will be used to confirm or decline the language change.
+       * When omitted, the default implementation is {@link DefaultLanguageChangeHandler}.
        * @since 2.0.0
-       * @see LanguageChangeHandler
        */
-      readonly handler: InjectableProvider;
+      readonly change?: InjectableProvider;
     };
   };
 
   /**
-   * Bundles configuration gives you control over bundles source.
+   * Configuration of bundle-related features.
    * @since 2.0.0
    */
   readonly bundle: {
 
     /**
-     * Provider of bundles repository.
-     * Must provide an implementation of {@link BundleRepository} which will be used to get phrase bundles.
+     * Provider of {@link BundleRepository} used to fetch bundles.
      * @since 2.0.0
-     * @see BundleRepository
-     * @see BundleSource
      */
     readonly repository: InjectableProvider;
+
+    /**
+     * Configuration of bundle handlers.
+     * @since 2.0.0
+     */
+    readonly handler?: {
+
+      /**
+       * Provider of missing bundle handler.
+       * Must provide an implementation of {@link MissingBundleHandler} which will be used to react on missing bundle.
+       * When omitted, the default implementation is {@link DefaultMissingBundleHandler}.
+       * @since 2.0.0
+       */
+      readonly missing?: InjectableProvider;
+    }
   };
 }

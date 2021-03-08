@@ -1,7 +1,8 @@
 import { OperatorData } from './operator/operator-data';
+import { Parameter } from '../../parameter';
 
 /**
- * Represents named pool which stores property name and operator(s).
+ * Represents a predicate data which is a mapping between the {@link Parameter} and one or more {@link OperatorData}.
  * @since 2.0.0
  */
-export type PredicateData = Record<string, OperatorData | OperatorData[]>;
+export type PredicateData = Record<Parameter, OperatorData | OperatorData[]>;
