@@ -1,13 +1,18 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, NextObserver } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
+import { DEFAULT_LANGUAGE } from '../configuration/injection-token';
 import { Language } from '../language/language';
 import { LanguageSource } from '../language/language-source';
-import { DEFAULT_LANGUAGE } from '../configuration/root-configuration';
 
+/**
+ * Represents an implementation of {@link LanguageSource} for testing which uses {@link DEFAULT_LANGUAGE} for initial value and
+ * allows for pushing changes.
+ * @since 2.0.0
+ */
 @Injectable({
   providedIn: 'root',
 })
-export class FakeLanguageSource extends LanguageSource {
+export class FakeLanguageSource extends LanguageSource implements NextObserver<Language> {
   private readonly languageSubject: BehaviorSubject<Language>;
 
   /**
@@ -33,6 +38,10 @@ export class FakeLanguageSource extends LanguageSource {
     this.languageSubject = new BehaviorSubject(defaultLanguage);
   }
 
+  /**
+   * Pushes {@link Language} change.
+   * @since 2.0.0
+   */
   next(language: Language): void {
     this.languageSubject.next(language);
   }

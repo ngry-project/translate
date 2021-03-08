@@ -8,25 +8,22 @@ import { Parameter } from '../../../parameter';
 
 /**
  * Represents {@link Operator} which performs check for value presence in set.
- * @see InOperatorSource
- * @see TranslationsCompiler.compileOperator
  * @since 2.0.0
+ * @internal
  */
 export class InOperator extends Operator<string | number | boolean> {
   private readonly values: Array<string | number | boolean>;
 
   /**
-   * Creates new instance.
    * @throws {Error} if values list has too few elements
    * @throws {Error} if value type not acceptable
-   * @since 2.0.0
    */
   constructor(
     language: Language,
     bundleId: BundleID,
     phraseKey: PhraseKey,
     propertyName: Parameter,
-    values: Array<string | number | boolean>
+    values: Array<string | number | boolean>,
   ) {
     super(language, bundleId, phraseKey, propertyName, new DebugContext({language, bundleId, phraseKey, propertyName, values}));
 
@@ -45,7 +42,6 @@ export class InOperator extends Operator<string | number | boolean> {
 
   /**
    * Tests value.
-   * @param value Value to test
    * @throws {Error} if value has not acceptable type
    * @since 2.0.0
    */
