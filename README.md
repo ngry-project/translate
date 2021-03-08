@@ -25,59 +25,23 @@ yarn add @ngry/translate
 
 ## Key concepts
 
-### Customizable phrases
+### Bundle
 
-#### Simple phrase
+✅ A better way to organize phrases by slicing them per feature modules\
+✅ Have a flat key/value structure\
+✅ Loaded on-demand alongside with lazy modules\
+✅ Phrases of 3 types: plain text, template and configurable\
+✅ Type-safe with TypeScript typings and JSON schema\
+✅ Bundle repository encapsulates the bundle source\
+✅ Missing bundle handler handles failed bundle requests
 
-```json
-{
-  "heading": "Hello world"
-}
-```
+### Language
 
-#### Template phrase
-
-```json
-{
-  "heading": "Hello {{ name }}"
-}
-```
-
-#### Configured phrase
-
-```json
-{
-  "list.header.results.count": {
-    "fallback": "Invalid value",
-    "options": [
-      {
-        "when": {
-          "count": {
-            "$eq": 0
-          }
-        },
-        "then": "No items found"
-      },
-      {
-        "when": {
-          "count": {
-            "$eq": 1
-          }
-        },
-        "then": "Single item found"
-      },
-      {
-        "when": {
-          "count": {
-            "$gt": 1
-          }
-        },
-        "then": "{{ count }} items found"
-      }
-    ]
-  }
-}
-```
+✅ Default language\
+✅ List of supported languages\
+✅ Language mapping maps language variants to one of the supported list\
+✅ Language source encapsulates the source of app's language\
+✅ Language change handler manages language transitions
 
 ## Root configuration
 
