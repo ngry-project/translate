@@ -6,6 +6,11 @@ import { PhraseKey } from '../phrase/phrase-key';
 import { RootTranslateStore } from './root-translate.store';
 import { TranslateService } from './translate.service';
 
+/**
+ * Represents an implementation of {@link TranslateService} which takes translations from the {@link RootTranslateStore}.
+ * @since 2.0.0
+ * @internal
+ */
 @Injectable({
   providedIn: 'root',
 })

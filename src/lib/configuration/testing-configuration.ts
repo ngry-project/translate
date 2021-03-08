@@ -4,7 +4,7 @@ import { InjectableProvider } from '@angular/core';
  * Represents root configuration.
  * @since 2.0.0
  */
-export interface RootConfiguration {
+export interface TestingConfiguration {
 
   /**
    * Configuration of language-related features.
@@ -40,7 +40,7 @@ export interface RootConfiguration {
     /**
      * Provider of language source.
      * Must provide an implementation of {@link LanguageSource} which initiates the language change.
-     * When omitted, the default implementation is {@link DefaultLanguageSource}.
+     * When omitted, the default implementation is {@link FakeLanguageSource}.
      * @since 2.0.0
      */
     readonly source?: InjectableProvider;
@@ -54,7 +54,7 @@ export interface RootConfiguration {
       /**
        * Provider of language change handler.
        * Must provide an implementation of {@link LanguageChangeHandler} which will be used to confirm or decline the language change.
-       * When omitted, the default implementation is {@link DefaultLanguageChangeHandler}.
+       * When omitted, the default implementation is {@link FakeLanguageChangeHandler}.
        * @since 2.0.0
        */
       readonly change?: InjectableProvider;
@@ -65,13 +65,14 @@ export interface RootConfiguration {
    * Configuration of bundle-related features.
    * @since 2.0.0
    */
-  readonly bundle: {
+  readonly bundle?: {
 
     /**
      * Provider of {@link BundleRepository} used to fetch bundles.
+     * When omitted, the default implementation is {@link FakeBundleRepository}.
      * @since 2.0.0
      */
-    readonly repository: InjectableProvider;
+    readonly repository?: InjectableProvider;
 
     /**
      * Configuration of bundle handlers.
@@ -82,7 +83,7 @@ export interface RootConfiguration {
       /**
        * Provider of missing bundle handler.
        * Must provide an implementation of {@link MissingBundleHandler} which will be used to react on missing bundle.
-       * When omitted, the default implementation is {@link DefaultMissingBundleHandler}.
+       * When omitted, the default implementation is {@link FakeMissingBundleHandler}.
        * @since 2.0.0
        */
       readonly missing?: InjectableProvider;

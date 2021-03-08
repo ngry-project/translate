@@ -7,7 +7,7 @@ import { RegExpOperatorData } from './reg-exp-operator-data';
 import { InOperatorData } from './in-operator-data';
 
 /**
- * Represents source of operator.
+ * Represents a raw state of supported operators.
  * @since 2.0.0
  */
 export type OperatorData =

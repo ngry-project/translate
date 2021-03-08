@@ -7,15 +7,8 @@ import { Parameter } from '../../../parameter';
 
 /**
  * Represents base for all operators.
- * @see EqualOperator
- * @see GreaterThanOperator
- * @see GreaterThanOrEqualOperator
- * @see InOperator
- * @see LowerThanOperator
- * @see LowerThanOrEqualOperator
- * @see NumberComparisonOperator
- * @see RegExpOperator
  * @since 2.0.0
+ * @internal
  */
 export abstract class Operator<T = unknown> {
   /**
@@ -25,17 +18,10 @@ export abstract class Operator<T = unknown> {
   protected context: DebugContext;
 
   /**
-   * Creates new instance.
-   * @param language Language name
-   * @param bundleId Bundle name
-   * @param phraseKey Phrase key
-   * @param property Property name
-   * @param context Debug context
    * @throws {Error} if language name is invalid
    * @throws {Error} if bundle name is empty
    * @throws {Error} if phrase key is empty
    * @throws {Error} if property name is empty
-   * @since 2.0.0
    */
   protected constructor(language: Language, bundleId: BundleID, phraseKey: PhraseKey, property: Parameter, context: DebugContext) {
     this.context = context;
@@ -48,7 +34,6 @@ export abstract class Operator<T = unknown> {
 
   /**
    * Tests value.
-   * @param value Value to test
    * @throws {Error} if value is not acceptable
    * @since 2.0.0
    */
