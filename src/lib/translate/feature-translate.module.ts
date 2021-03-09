@@ -4,7 +4,7 @@ import { BundlesRequest } from '../bundle/bundles-request';
 import { FeatureConfiguration } from '../configuration/feature-configuration';
 import { FEATURE_CONFIGURATION } from '../configuration/injection-token';
 import { LanguageStore } from '../language/language-store';
-import { TranslatePipe } from './translate.pipe';
+import { BaseTranslateModule } from './base-translate.module';
 
 /**
  * Represents a feature translation module which provides an infrastructure for lazy modules translations.
@@ -12,11 +12,11 @@ import { TranslatePipe } from './translate.pipe';
  * @internal
  */
 @NgModule({
-  declarations: [
-    TranslatePipe,
+  imports: [
+    BaseTranslateModule,
   ],
   exports: [
-    TranslatePipe,
+    BaseTranslateModule,
   ],
 })
 export class FeatureTranslateModule {

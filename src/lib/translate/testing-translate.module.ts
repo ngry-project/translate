@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
-import { TranslatePipe } from './translate.pipe';
+import { BaseTranslateModule } from './base-translate.module';
 
 /**
  * Represents a testing translate module.
  * @since 2.0.0
  */
 @NgModule({
-  declarations: [
-    TranslatePipe,
+  imports: [
+    BaseTranslateModule,
   ],
   exports: [
-    TranslatePipe,
+    BaseTranslateModule,
   ],
 })
 export class TestingTranslateModule {
