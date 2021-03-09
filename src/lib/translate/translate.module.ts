@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, Provider } from '@angular/core';
+import { Inject, ModuleWithProviders, NgModule, Optional, Provider } from '@angular/core';
 import { BundleRepository } from '../bundle/bundle-repository';
 import { MissingBundleHandler } from '../bundle/missing-bundle-handler';
 import { DefaultMissingBundleHandler } from '../bundle/default-missing-bundle-handler';
@@ -12,21 +12,29 @@ import { DefaultLanguageSource } from '../language/default-language-source';
 import { LanguageChangeHandler } from '../language/language-change-handler';
 import { DefaultLanguageChangeHandler } from '../language/default-language-change-handler';
 import { FakeMissingBundleHandler } from '../testing/fake-missing-bundle-handler';
-import { RootTranslateModule } from './root-translate.module';
-import { FeatureTranslateModule } from './feature-translate.module';
 import { TranslateService } from './translate.service';
 import { RootTranslateService } from './root-translate.service';
 import { FakeLanguageChangeHandler } from '../testing/fake-language-change-handler';
 import { FakeLanguageSource } from '../testing/fake-language-source';
-import { TestingTranslateModule } from './testing-translate.module';
 import { FakeTranslateService } from '../testing/fake-translate.service';
 import { StaticBundleRepository } from '../bundle/static-bundle-repository';
+import { TranslatePipe } from './translate.pipe';
+import { LanguageStore } from '../language/language-store';
+import { BundleCollectionStore } from '../bundle/bundle-collection-store';
+import { BundlesRequest } from '../bundle/bundles-request';
 
 /**
  * Represents a main translation module.
  * @since 2.0.0
  */
-@NgModule()
+@NgModule({
+  declarations: [
+    TranslatePipe,
+  ],
+  exports: [
+    TranslatePipe,
+  ],
+})
 export class TranslateModule {
   /**
    * Registers translation module for app root.
@@ -162,4 +170,56 @@ export class TranslateModule {
       ],
     };
   }
+}
+
+/**
+ * Represents a root translation module.
+ * @since 2.0.0
+ * @internal
+ */
+@NgModule()
+export class RootTranslateModule {
+}
+
+/**
+ * Represents a feature translation module which provides an infrastructure for lazy modules translations.
+ * @since 2.0.0
+ * @internal
+ */
+@NgModule({
+  imports: [
+    TranslateModule,
+  ],
+  exports: [
+    TranslateModule,
+  ],
+})
+export class FeatureTranslateModule {
+
+  constructor(
+    @Optional() @Inject(FEATURE_CONFIGURATION) configurations: Array<FeatureConfiguration>,
+    languageStore: LanguageStore,
+    bundlesStore: BundleCollectionStore,
+  ) {
+    if (configurations) {
+      for (const configuration of configurations) {
+        bundlesStore.loadMany(new BundlesRequest(languageStore.snapshot.current, configuration.bundles));
+      }
+    }
+  }
+}
+
+/**
+ * Represents a testing translate module.
+ * @since 2.0.0
+ */
+@NgModule({
+  imports: [
+    TranslateModule,
+  ],
+  exports: [
+    TranslateModule,
+  ],
+})
+export class TestingTranslateModule {
 }
