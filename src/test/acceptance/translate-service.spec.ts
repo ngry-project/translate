@@ -296,4 +296,252 @@ describe('TranslateService', () => {
     });
   });
 
+  describe('enabled debug mode', () => {
+    let translateService: TranslateService;
+    let bundleRepository: FakeBundleRepository;
+    const translations: Array<string> = [];
+
+    describe('given', () => {
+      test('debug mode is enabled', () => {
+        TestBed.configureTestingModule({
+          imports: [
+            TranslateModule.forRoot({
+              language: {
+                default: {
+                  useValue: 'en',
+                },
+                supported: {
+                  useValue: ['en', 'ua'],
+                },
+                source: {
+                  useExisting: FakeLanguageSource,
+                },
+                handler: {
+                  change: {
+                    useExisting: FakeLanguageChangeHandler,
+                  },
+                },
+              },
+              bundle: {
+                repository: {
+                  useExisting: BundleRepositoryFixture,
+                },
+              },
+              debug: {
+                enabled: {
+                  useValue: true,
+                },
+              },
+            }),
+            TranslateModule.forFeature({
+              bundles: ['form'],
+            }),
+          ],
+        });
+
+        bundleRepository = TestBed.inject(BundleRepository) as BundleRepositoryFixture;
+        translateService = TestBed.inject(TranslateService);
+
+        translateService.translate('form.field.required').subscribe(translation => {
+          translations.push(translation);
+        });
+      });
+    });
+
+    describe('when', () => {
+      test('the bundles have been loaded', done => {
+        expect(bundleRepository.requests.length).toBe(1);
+        expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+        expect(bundleRepository.responses.length).toBe(0);
+        expect(bundleRepository.errors.length).toBe(0);
+
+        bundleRepository.responses$.pipe(
+          take(1),
+        ).subscribe(() => {
+          expect(bundleRepository.requests.length).toBe(1);
+          expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+          expect(bundleRepository.responses.length).toBe(1);
+          expect(bundleRepository.errors.length).toBe(0);
+
+          done();
+        });
+      });
+    });
+
+    describe('then', () => {
+      it('the phrase translation has been pushed twice', () => {
+        expect(translations.length).toBe(2);
+      });
+
+      it('the initial phrase translation equals to the phrase key', () => {
+        expect(translations[0]).toBe('form.field.required');
+      });
+
+      it('the final phrase translation equals to the normal phrase translation', () => {
+        expect(translations[1]).toBe(`This field is required`);
+      });
+    });
+  });
+
+  describe('disabled debug mode', () => {
+    let translateService: TranslateService;
+    let bundleRepository: FakeBundleRepository;
+    const translations: Array<string> = [];
+
+    describe('given', () => {
+      test('debug mode is disabled', () => {
+        TestBed.configureTestingModule({
+          imports: [
+            TranslateModule.forRoot({
+              language: {
+                default: {
+                  useValue: 'en',
+                },
+                supported: {
+                  useValue: ['en', 'ua'],
+                },
+                source: {
+                  useExisting: FakeLanguageSource,
+                },
+                handler: {
+                  change: {
+                    useExisting: FakeLanguageChangeHandler,
+                  },
+                },
+              },
+              bundle: {
+                repository: {
+                  useExisting: BundleRepositoryFixture,
+                },
+              },
+              debug: {
+                enabled: {
+                  useValue: false,
+                },
+              },
+            }),
+            TranslateModule.forFeature({
+              bundles: ['form'],
+            }),
+          ],
+        });
+
+        bundleRepository = TestBed.inject(BundleRepository) as BundleRepositoryFixture;
+        translateService = TestBed.inject(TranslateService);
+
+        translateService.translate('form.field.required').subscribe(translation => {
+          translations.push(translation);
+        });
+      });
+    });
+
+    describe('when', () => {
+      test('the bundles have been loaded', done => {
+        expect(bundleRepository.requests.length).toBe(1);
+        expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+        expect(bundleRepository.responses.length).toBe(0);
+        expect(bundleRepository.errors.length).toBe(0);
+
+        bundleRepository.responses$.pipe(
+          take(1),
+        ).subscribe(() => {
+          expect(bundleRepository.requests.length).toBe(1);
+          expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+          expect(bundleRepository.responses.length).toBe(1);
+          expect(bundleRepository.errors.length).toBe(0);
+
+          done();
+        });
+      });
+    });
+
+    describe('then', () => {
+      it('the phrase translation has been pushed once', () => {
+        expect(translations.length).toBe(1);
+      });
+
+      it('the final phrase translation equals to the normal phrase translation', () => {
+        expect(translations[0]).toBe(`This field is required`);
+      });
+    });
+  });
+
+  describe('default debug mode', () => {
+    let translateService: TranslateService;
+    let bundleRepository: FakeBundleRepository;
+    const translations: Array<string> = [];
+
+    describe('given', () => {
+      test('debug mode is default', () => {
+        TestBed.configureTestingModule({
+          imports: [
+            TranslateModule.forRoot({
+              language: {
+                default: {
+                  useValue: 'en',
+                },
+                supported: {
+                  useValue: ['en', 'ua'],
+                },
+                source: {
+                  useExisting: FakeLanguageSource,
+                },
+                handler: {
+                  change: {
+                    useExisting: FakeLanguageChangeHandler,
+                  },
+                },
+              },
+              bundle: {
+                repository: {
+                  useExisting: BundleRepositoryFixture,
+                },
+              },
+            }),
+            TranslateModule.forFeature({
+              bundles: ['form'],
+            }),
+          ],
+        });
+
+        bundleRepository = TestBed.inject(BundleRepository) as BundleRepositoryFixture;
+        translateService = TestBed.inject(TranslateService);
+
+        translateService.translate('form.field.required').subscribe(translation => {
+          translations.push(translation);
+        });
+      });
+    });
+
+    describe('when', () => {
+      test('the bundles have been loaded', done => {
+        expect(bundleRepository.requests.length).toBe(1);
+        expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+        expect(bundleRepository.responses.length).toBe(0);
+        expect(bundleRepository.errors.length).toBe(0);
+
+        bundleRepository.responses$.pipe(
+          take(1),
+        ).subscribe(() => {
+          expect(bundleRepository.requests.length).toBe(1);
+          expect(bundleRepository.requests).toContainEqual(new BundleRequest('en', 'form'));
+          expect(bundleRepository.responses.length).toBe(1);
+          expect(bundleRepository.errors.length).toBe(0);
+
+          done();
+        });
+      });
+    });
+
+    describe('then', () => {
+      it('the phrase translation has been pushed once', () => {
+        expect(translations.length).toBe(1);
+      });
+
+      it('the final phrase translation equals to the normal phrase translation', () => {
+        expect(translations[0]).toBe(`This field is required`);
+      });
+    });
+  });
+
 });
