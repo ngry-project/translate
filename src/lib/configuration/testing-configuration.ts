@@ -98,7 +98,7 @@ export interface TestingConfiguration {
     /**
      * Provider of debug status.
      * Must provide a {@link boolean} value.
-     * When omitted, the default value is `true`.
+     * When omitted, the default value is `false`.
      * @since 2.2.0
      */
     enabled?: InjectableProvider;

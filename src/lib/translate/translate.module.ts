@@ -152,7 +152,7 @@ export class TranslateModule {
         {
           provide: DEBUG_ENABLED,
           ...(configuration.debug?.enabled ?? {
-            useValue: true,
+            useValue: false,
           }),
         } as Provider,
         {

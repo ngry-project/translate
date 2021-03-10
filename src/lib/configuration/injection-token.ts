@@ -33,7 +33,7 @@ export const FEATURE_CONFIGURATION = new InjectionToken<FeatureConfiguration>('F
 
 /**
  * An {@link InjectionToken} for debug status (enabled/disabled).
- * @since 2.0.0
+ * @since 2.2.0
  * @internal
  */
 export const DEBUG_ENABLED = new InjectionToken<boolean>('DEBUG_ENABLED');
