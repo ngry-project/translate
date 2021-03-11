@@ -1,7 +1,8 @@
 import { Observable, of } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { PhraseKey } from '../phrase/phrase-key';
+import { Inject, Injectable } from '@angular/core';
+import { DEBUG_ENABLED } from '../configuration/injection-token';
 import { Locals } from '../phrase/locals';
+import { PhraseKey } from '../phrase/phrase-key';
 import { TranslateService } from '../translate/translate.service';
 
 /**
@@ -13,11 +14,19 @@ import { TranslateService } from '../translate/translate.service';
   providedIn: 'root',
 })
 export class FakeTranslateService extends TranslateService {
+
+  constructor(
+    @Inject(DEBUG_ENABLED)
+    private readonly debug: boolean,
+  ) {
+    super();
+  }
+
   instant(key: PhraseKey, locals?: Locals): string {
-    return key;
+    return this.debug ? key : '';
   }
 
   translate(key: PhraseKey, locals?: Locals): Observable<string> {
-    return of(key);
+    return of(this.debug ? key : '');
   }
 }
