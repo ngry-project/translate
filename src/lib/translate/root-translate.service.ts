@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { DEBUG_ENABLED } from '../configuration/injection-token';
 import { Locals } from '../phrase/locals';
 import { PhraseKey } from '../phrase/phrase-key';
 import { RootTranslateStore } from './root-translate.store';
@@ -18,6 +19,8 @@ export class RootTranslateService extends TranslateService {
 
   constructor(
     private readonly store: RootTranslateStore,
+    @Inject(DEBUG_ENABLED)
+    private readonly debug: boolean,
   ) {
     super();
   }
@@ -25,18 +28,14 @@ export class RootTranslateService extends TranslateService {
   instant(key: PhraseKey, locals?: Locals): string {
     const phrase = this.store.snapshot.get(key);
 
-    if (phrase) {
-      return phrase.translate(locals);
-    } else {
-      return '';
-    }
+    return phrase ? phrase.translate(locals) : this.debug ? key : '';
   }
 
   translate(key: PhraseKey, locals?: Locals): Observable<string> {
     return this.store.state.pipe(
       map(phrases => phrases.get(key)),
-      filter(phrase => phrase != null),
-      map(phrase => phrase!.translate(locals)),
+      map(phrase => phrase ? phrase.translate(locals) : this.debug ? key : ''),
+      filter(value => value.length > 0),
       distinctUntilChanged(),
     );
   }

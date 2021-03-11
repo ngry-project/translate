@@ -30,3 +30,10 @@ export const LANGUAGE_MAPPING = new InjectionToken<LanguageMapping>('LANGUAGE_MA
  * @internal
  */
 export const FEATURE_CONFIGURATION = new InjectionToken<FeatureConfiguration>('FEATURE_CONFIGURATION');
+
+/**
+ * An {@link InjectionToken} for debug status (enabled/disabled).
+ * @since 2.2.0
+ * @internal
+ */
+export const DEBUG_ENABLED = new InjectionToken<boolean>('DEBUG_ENABLED');

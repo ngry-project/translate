@@ -88,4 +88,18 @@ export interface RootConfiguration {
       readonly missing?: InjectableProvider;
     }
   };
+
+  /**
+   * Configuration of debug.
+   * @since 2.2.0
+   */
+  readonly debug?: {
+    /**
+     * Provider of debug status.
+     * Must provide a {@link boolean} value.
+     * When omitted, the default value is `false`.
+     * @since 2.2.0
+     */
+    enabled?: InjectableProvider;
+  };
 }

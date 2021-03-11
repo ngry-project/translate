@@ -5,10 +5,11 @@ import { Language } from '../../lib/language/language';
 import { ActiveLanguage } from '../../lib/language/active-language';
 import { TranslateModule } from '../../lib/translate/translate.module';
 import { TranslateService } from '../../lib/translate/translate.service';
+import { FakeTranslateService } from '../../lib/testing/fake-translate.service';
 
 describe('testing module', () => {
   describe('translate pipe', () => {
-    it('should register the "translate" pipe', async () => {
+    it('should provide a TranslatePipe', async () => {
       @Component({
         selector: 'lib-test',
         template: `{{ 'phrase.key' | translate }}`,
@@ -38,7 +39,7 @@ describe('testing module', () => {
       await fixture.whenStable();
       await fixture.whenRenderingDone();
 
-      expect(fixture.elementRef.nativeElement.innerHTML).toBe('phrase.key');
+      expect(fixture.elementRef.nativeElement.innerHTML).toBe('');
     });
   });
 
@@ -46,11 +47,11 @@ describe('testing module', () => {
     it('should provide a TranslateService', async () => {
       @Component({
         selector: 'lib-test',
-        template: `{{ trs.translate('phrase.key') | async }}`,
+        template: `{{ translateService.translate('phrase.key') | async }}`,
       })
       class TestComponent {
         constructor(
-          readonly trs: TranslateService,
+          readonly translateService: TranslateService,
         ) {
         }
       }
@@ -73,18 +74,14 @@ describe('testing module', () => {
       await TestBed.compileComponents();
 
       const fixture = TestBed.createComponent(TestComponent);
+      const component = fixture.componentInstance;
 
-      fixture.detectChanges();
-
-      await fixture.whenStable();
-      await fixture.whenRenderingDone();
-
-      expect(fixture.debugElement.nativeElement.innerHTML).toBe('phrase.key');
+      expect(component.translateService).toBeInstanceOf(FakeTranslateService);
     });
   });
 
   describe('active language', () => {
-    it('should provide an ActiveLanguage provider', async () => {
+    it('should provide an ActiveLanguage', async () => {
       @Component({
         selector: 'lib-test',
         template: `
@@ -141,8 +138,129 @@ describe('testing module', () => {
       expect(component.languages).toEqual(['en', 'ua']);
 
       expect(fixture.debugElement.query(By.css('p')).nativeElement.innerHTML).toBe('Current language: en');
-      expect(fixture.debugElement.query(By.css('label')).nativeElement.innerHTML).toBe('phrase.key');
+      expect(fixture.debugElement.query(By.css('label')).nativeElement.innerHTML).toBe('');
       expect(fixture.debugElement.queryAll(By.css('option')).length).toBe(2);
+    });
+  });
+
+  describe('debug mode is default', () => {
+    it('should render an empty string', async () => {
+      @Component({
+        selector: 'lib-test',
+        template: `{{ 'phrase.key' | translate }}`,
+      })
+      class TestComponent {
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          TranslateModule.forTesting({
+            language: {
+              default: {
+                useValue: 'en',
+              },
+            },
+          }),
+        ],
+        declarations: [
+          TestComponent,
+        ],
+      });
+
+      await TestBed.compileComponents();
+
+      const fixture = TestBed.createComponent(TestComponent);
+
+      fixture.detectChanges();
+
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
+
+      expect(fixture.nativeElement.textContent).toBe('');
+    });
+  });
+
+  describe('debug mode is disabled', () => {
+    it('should render an empty string', async () => {
+      @Component({
+        selector: 'lib-test',
+        template: `{{ 'phrase.key' | translate }}`,
+      })
+      class TestComponent {
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          TranslateModule.forTesting({
+            language: {
+              default: {
+                useValue: 'en',
+              },
+            },
+            debug: {
+              enabled: {
+                useValue: false,
+              },
+            },
+          }),
+        ],
+        declarations: [
+          TestComponent,
+        ],
+      });
+
+      await TestBed.compileComponents();
+
+      const fixture = TestBed.createComponent(TestComponent);
+
+      fixture.detectChanges();
+
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
+
+      expect(fixture.nativeElement.textContent).toBe('');
+    });
+  });
+
+  describe('debug mode is enabled', () => {
+    it('should render the phrase key', async () => {
+      @Component({
+        selector: 'lib-test',
+        template: `{{ 'phrase.key' | translate }}`,
+      })
+      class TestComponent {
+      }
+
+      TestBed.configureTestingModule({
+        imports: [
+          TranslateModule.forTesting({
+            language: {
+              default: {
+                useValue: 'en',
+              },
+            },
+            debug: {
+              enabled: {
+                useValue: true,
+              },
+            },
+          }),
+        ],
+        declarations: [
+          TestComponent,
+        ],
+      });
+
+      await TestBed.compileComponents();
+
+      const fixture = TestBed.createComponent(TestComponent);
+
+      fixture.detectChanges();
+
+      await fixture.whenStable();
+      await fixture.whenRenderingDone();
+
+      expect(fixture.nativeElement.textContent).toBe('phrase.key');
     });
   });
 });

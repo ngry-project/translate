@@ -5,7 +5,13 @@ import { DefaultMissingBundleHandler } from '../bundle/default-missing-bundle-ha
 import { RootConfiguration } from '../configuration/root-configuration';
 import { FeatureConfiguration } from '../configuration/feature-configuration';
 import { TestingConfiguration } from '../configuration/testing-configuration';
-import { DEFAULT_LANGUAGE, FEATURE_CONFIGURATION, LANGUAGE_MAPPING, SUPPORTED_LANGUAGES } from '../configuration/injection-token';
+import {
+  DEBUG_ENABLED,
+  DEFAULT_LANGUAGE,
+  FEATURE_CONFIGURATION,
+  LANGUAGE_MAPPING,
+  SUPPORTED_LANGUAGES,
+} from '../configuration/injection-token';
 import { Language } from '../language/language';
 import { LanguageSource } from '../language/language-source';
 import { DefaultLanguageSource } from '../language/default-language-source';
@@ -61,6 +67,12 @@ export class TranslateModule {
           provide: LANGUAGE_MAPPING,
           ...(configuration.language.mapping ?? {
             useValue: {},
+          }),
+        } as Provider,
+        {
+          provide: DEBUG_ENABLED,
+          ...(configuration.debug?.enabled ?? {
+            useValue: false,
           }),
         } as Provider,
         {
@@ -135,6 +147,12 @@ export class TranslateModule {
           provide: LANGUAGE_MAPPING,
           ...(configuration.language.mapping ?? {
             useValue: {},
+          }),
+        } as Provider,
+        {
+          provide: DEBUG_ENABLED,
+          ...(configuration.debug?.enabled ?? {
+            useValue: false,
           }),
         } as Provider,
         {
