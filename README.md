@@ -346,6 +346,44 @@ export class AppModule {
 
 To implement a custom bundle repository, you need to extend a `MissingBundleHandler` abstract class.
 
+### Debug mode
+
+Debug mode is disabled by default, which hides phrase keys from users' eyes.
+
+You may need to enable it for non-production environments and modes, for example to see untranslated phrase keys.
+
+Declare a provider of the debug configuration in the root module:
+
+```ts
+import { NgModule } from '@angular/core';
+import { TranslateModule } from '@ngry/translate';
+import { CustomBundleRepository } from './support/translate/custom-bundle-repository';
+
+@NgModule({
+  imports: [
+    TranslateModule.forRoot({
+      language: {
+        default: {
+          useValue: 'en',
+        },
+      },
+      bundle: {
+        repository: {
+          useExisting: CustomBundleRepository,
+        },
+      },
+      debug: {
+        enabled: {
+          useValue: !environment.production,
+        },
+      },
+    }),
+  ],
+})
+export class AppModule {
+}
+```
+
 ## Feature configuration
 
 You can configure every lazy-loaded module separately by importing the translation module this way:
